@@ -4,3 +4,5 @@ Console.WriteLine("hello from Stefan");
 
 int x = 2;
 Console.WriteLine(x);
+int y = 3;
+Console.WriteLine(y);
