@@ -9,3 +9,7 @@
 /.gitignore
 /.gitignore
 /.vs/Cod QR/DesignTimeBuild/.dtbcache.v2
+/Cod QR/obj/Debug/net6.0/Cod QR.AssemblyInfo.cs
+/Cod QR/obj/Debug/net6.0/Cod QR.AssemblyInfoInputs.cache
+/Cod QR/obj/Debug/net6.0/Cod QR.assets.cache
+/Cod QR/obj/Debug/net6.0/Cod QR.GeneratedMSBuildEditorConfig.editorconfig
