@@ -9,3 +9,13 @@
 /.gitignore
 /.gitignore
 /.vs/Cod QR/DesignTimeBuild/.dtbcache.v2
+/.vs/QR-Code-Generator-Scanner/v17/.wsuo
+/Cod QR/obj/Cod QR.csproj.nuget.dgspec.json
+/Cod QR/obj/Cod QR.csproj.nuget.g.props
+/Cod QR/obj/Debug/net6.0/Cod QR.AssemblyInfo.cs
+/Cod QR/obj/Debug/net6.0/Cod QR.AssemblyInfoInputs.cache
+/Cod QR/obj/Debug/net6.0/Cod QR.assets.cache
+/Cod QR/obj/Debug/net6.0/Cod QR.csproj.AssemblyReference.cache
+/Cod QR/obj/Debug/net6.0/Cod QR.GeneratedMSBuildEditorConfig.editorconfig
+/Cod QR/obj/project.assets.json
+/Cod QR/obj/project.nuget.cache
