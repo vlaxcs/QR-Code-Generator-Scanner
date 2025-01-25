@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Cod QR")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c3af6289bfb79df44733f9a3c57ed4b5e272f1dc")]
 [assembly: System.Reflection.AssemblyProductAttribute("Cod QR")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Cod QR")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

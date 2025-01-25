@@ -8,19 +8,19 @@
     "net6.0": []
   },
   "packageFolders": {
-    "C:\\Users\\vladx\\.nuget\\packages\\": {}
+    "C:\\Users\\Dalv\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\vladx\\source\\repos\\vlaxcs\\QR-Code-Generator-Scanner\\Cod QR\\Cod QR.csproj",
+      "projectUniqueName": "C:\\Dalv\\School\\University\\Classes\\ASC\\CodQR\\Cod QR\\Cod QR.csproj",
       "projectName": "Cod QR",
-      "projectPath": "C:\\Users\\vladx\\source\\repos\\vlaxcs\\QR-Code-Generator-Scanner\\Cod QR\\Cod QR.csproj",
-      "packagesPath": "C:\\Users\\vladx\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\vladx\\source\\repos\\vlaxcs\\QR-Code-Generator-Scanner\\Cod QR\\obj\\",
+      "projectPath": "C:\\Dalv\\School\\University\\Classes\\ASC\\CodQR\\Cod QR\\Cod QR.csproj",
+      "packagesPath": "C:\\Users\\Dalv\\.nuget\\packages\\",
+      "outputPath": "C:\\Dalv\\School\\University\\Classes\\ASC\\CodQR\\Cod QR\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\vladx\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Dalv\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -40,6 +40,11 @@
         "warnAsError": [
           "NU1605"
         ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -61,7 +66,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.100\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.203\\RuntimeIdentifierGraph.json"
       }
     }
   }
