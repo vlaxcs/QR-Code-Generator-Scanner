@@ -1,12 +1,3 @@
-﻿Console.WriteLine("salut");
-Console.WriteLine("hello from dalv");
-Console.WriteLine("hello from Stefan");
+﻿using Cod_QR;
 
-int x = 2;
-Console.WriteLine(x);
-int y = 3;
-Console.WriteLine(y);
-int z = 6;
-Console.WriteLine(z);
-int w = 69;
-Console.WriteLine(w);
+var code = new QRCode("C:\\Dalv\\School\\University\\Classes\\ASC\\CodQR\\Cod QR\\dfr.png");
