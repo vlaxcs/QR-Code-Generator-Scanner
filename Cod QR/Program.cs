@@ -1,3 +1,4 @@
 ﻿using Cod_QR;
-
-var code = new QRCode("C:\\Dalv\\School\\University\\Classes\\ASC\\CodQR\\Cod QR\\dfr.png");
+Console.WriteLine("hi");
+Console.ReadLine();
+var code = new QRCodeImageParser("C:\\Dalv\\School\\University\\Classes\\ASC\\CodQR\\Reference.png");

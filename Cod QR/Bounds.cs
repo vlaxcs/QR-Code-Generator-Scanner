@@ -1,12 +1,16 @@
 ﻿namespace Cod_QR {
-    struct Padding {
+    struct Bounds {
         public int left, right, top, bottom;
 
-        public Padding(int left, int right, int top, int bottom) {
+        public Bounds(int left, int right, int top, int bottom) {
             this.left = left;
             this.right = right;
             this.top = top;
             this.bottom = bottom;
+        }
+
+        public override string ToString() {
+            return $"{left} {top} {right} {bottom}";
         }
     }
 }
