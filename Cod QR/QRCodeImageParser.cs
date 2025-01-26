@@ -10,23 +10,17 @@ namespace Cod_QR {
     public static class QRCodeImageParser {
         const int BRIGHTNESS_THRESHOLD = 30;
 
-        public static void Parse(string imagePath) {
+        public static int[][] Parse(string imagePath) {
             Console.SetCursorPosition(0, 0);
             var img = Image.Load<Rgba32>(imagePath);
 
             var bounds = DetermineBounds(img);
 
-            int pixelSize = DeterminePixelSize(img, bounds) - 1;
-            Console.WriteLine(pixelSize);
+            int pixelSize = DeterminePixelSize(img, bounds);
 
             int[][] rawQR = ExtractJaggedArray(img, bounds, pixelSize);
 
-            PrintImage(rawQR);
-
-            Console.ReadLine();
-            Console.SetCursorPosition(0, 0);
-
-            CheckOrientation(rawQR);
+            return CheckOrientation(rawQR);
         }
 
 
@@ -34,56 +28,56 @@ namespace Cod_QR {
         static bool isDark(Rgba32 pixel) {
             return (pixel.R + pixel.G + pixel.B) / 3 < BRIGHTNESS_THRESHOLD;
         }
-        static void PrintImage(Image<Rgba32> img) {
-            for(int i = 0; i < img.Height; i++) {
-                for(int j = 0; j < img.Width; j++) {
-                    PrintPixel(img[j, i]);
-                }
-                Console.BackgroundColor = ConsoleColor.Black;
-                Console.WriteLine();
-            }
-        }
-        static void PrintImage(Image<Rgba32> img, Bounds bounds) {
-            for(int i = bounds.top; i < bounds.bottom; i++) {
-                for(int j = bounds.left; j < bounds.right; j++) {
-                    PrintPixel(img[j, i]);
-                }
-                Console.BackgroundColor = ConsoleColor.Black;
-                Console.WriteLine();
-            }
-        }
-        static void PrintImage(int[][] img) {
-            int n = img.Length;
-            Console.BackgroundColor = ConsoleColor.White;
-            Console.WriteLine("                                             ");
-            for(int i = 0; i < n; i++) {
-                Console.BackgroundColor = ConsoleColor.White;
-                Console.Write("  ");
-                for(int j = 0; j < n; j++) {
+        //static void PrintImage(Image<Rgba32> img) {
+        //    for(int i = 0; i < img.Height; i++) {
+        //        for(int j = 0; j < img.Width; j++) {
+        //            PrintPixel(img[j, i]);
+        //        }
+        //        Console.BackgroundColor = ConsoleColor.Black;
+        //        Console.WriteLine();
+        //    }
+        //}
+        //static void PrintImage(Image<Rgba32> img, Bounds bounds) {
+        //    for(int i = bounds.top; i < bounds.bottom; i++) {
+        //        for(int j = bounds.left; j < bounds.right; j++) {
+        //            PrintPixel(img[j, i]);
+        //        }
+        //        Console.BackgroundColor = ConsoleColor.Black;
+        //        Console.WriteLine();
+        //    }
+        //}
+        //static void PrintImage(int[][] img) {
+        //    int n = img.Length;
+        //    Console.BackgroundColor = ConsoleColor.White;
+        //    Console.WriteLine("                                             ");
+        //    for(int i = 0; i < n; i++) {
+        //        Console.BackgroundColor = ConsoleColor.White;
+        //        Console.Write("  ");
+        //        for(int j = 0; j < n; j++) {
 
-                    if(img[i][j] == 1) Console.BackgroundColor = ConsoleColor.Black;
-                    else Console.BackgroundColor = ConsoleColor.White;
-                    Console.Write("  ");
-                    Console.BackgroundColor = ConsoleColor.Black;
-                }
-                Console.BackgroundColor = ConsoleColor.White;
-                Console.Write("  ");
-                Console.BackgroundColor = ConsoleColor.Black;
-                Console.WriteLine();
-            }
-            Console.BackgroundColor = ConsoleColor.White;
-            Console.WriteLine("                                             ");
-            Console.BackgroundColor = ConsoleColor.Black;
-        }
-        static void PrintPixel(Rgba32 pixel) {
-            if(isDark(pixel)) {
-                Console.BackgroundColor = ConsoleColor.Black;
-            } else {
-                Console.BackgroundColor = ConsoleColor.White;
-            }
-            Console.Write("  ");
-            Console.BackgroundColor = ConsoleColor.Black;
-        }
+        //            if(img[i][j] == 1) Console.BackgroundColor = ConsoleColor.Black;
+        //            else Console.BackgroundColor = ConsoleColor.White;
+        //            Console.Write("  ");
+        //            Console.BackgroundColor = ConsoleColor.Black;
+        //        }
+        //        Console.BackgroundColor = ConsoleColor.White;
+        //        Console.Write("  ");
+        //        Console.BackgroundColor = ConsoleColor.Black;
+        //        Console.WriteLine();
+        //    }
+        //    Console.BackgroundColor = ConsoleColor.White;
+        //    Console.WriteLine("                                             ");
+        //    Console.BackgroundColor = ConsoleColor.Black;
+        //}
+        //static void PrintPixel(Rgba32 pixel) {
+        //    if(isDark(pixel)) {
+        //        Console.BackgroundColor = ConsoleColor.Black;
+        //    } else {
+        //        Console.BackgroundColor = ConsoleColor.White;
+        //    }
+        //    Console.Write("  ");
+        //    Console.BackgroundColor = ConsoleColor.Black;
+        //}
 
 
 
@@ -191,7 +185,7 @@ namespace Cod_QR {
             (i, j, n) => (n - i - 1, n - j - 1), // Empty corner Top Left
             (i, j, n) => (n - j - 1, i), // Empty corner Top Right
         };
-        static void CheckOrientation(int[][] rawQR) {
+        static int[][] CheckOrientation(int[][] rawQR) {
             int n = rawQR.Length;
             bool bottomSymmetric = true, rightSymmetric = true;
             // Check if bottom two alignment patterns match
@@ -219,7 +213,7 @@ namespace Cod_QR {
                 }
             }
 
-            PrintImage(correctQR);
+            return correctQR;
         }
     }
 }

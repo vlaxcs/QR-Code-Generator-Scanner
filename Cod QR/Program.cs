@@ -2,10 +2,10 @@
 using System.Xml.Linq;
 using Cod_QR;
 
-while(true) {
-    QRCodeImageParser.Parse(@"../../../../gabi.jpg");
-    Console.ReadLine(); 
-}
+//while(true) {
+//    QRCodeImageParser.Parse(@"../../../../Reference.png");
+//    Console.ReadLine(); 
+//}
 
 
 int[][] array = {
@@ -31,11 +31,4 @@ new int[]{1,0,1,1,1,0,1,0,0,0,1,1,1,1,0,1,1,1,1,0,0},
 new int[]{1,0,0,0,0,0,1,0,1,1,1,0,1,0,0,1,0,0,0,0,1},
 new int[]{1,1,1,1,1,1,1,0,0,0,1,1,1,1,0,1,1,0,1,0,0} };
 
-var arr = new int[56][];
-for (int i = 0; i < 56; i++) {
-    arr[i] = new int[56];
-	for (int j = 0; j < 56; j++){
-		arr[i][j] = 0;
-	}
-}
-new QrCodeData(arr);
+var code = new QRCode(array);
