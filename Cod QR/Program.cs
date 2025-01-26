@@ -3,7 +3,7 @@ using System.Xml.Linq;
 using Cod_QR;
 
 while(true) {
-    QRCodeImageParser.Parse(@"../../../../Reference.png");
+    QRCodeImageParser.Parse(@"../../../../gabi.jpg");
     Console.ReadLine(); 
 }
 

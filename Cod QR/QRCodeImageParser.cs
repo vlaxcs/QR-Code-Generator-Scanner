@@ -8,7 +8,7 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace Cod_QR {
     public static class QRCodeImageParser {
-        const int BRIGHTNESS_THRESHOLD = 120;
+        const int BRIGHTNESS_THRESHOLD = 30;
 
         public static void Parse(string imagePath) {
             Console.SetCursorPosition(0, 0);
@@ -16,7 +16,8 @@ namespace Cod_QR {
 
             var bounds = DetermineBounds(img);
 
-            int pixelSize = DeterminePixelSize(img, bounds);
+            int pixelSize = DeterminePixelSize(img, bounds) - 1;
+            Console.WriteLine(pixelSize);
 
             int[][] rawQR = ExtractJaggedArray(img, bounds, pixelSize);
 
@@ -53,15 +54,26 @@ namespace Cod_QR {
         }
         static void PrintImage(int[][] img) {
             int n = img.Length;
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.WriteLine("                                             ");
             for(int i = 0; i < n; i++) {
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.Write("  ");
                 for(int j = 0; j < n; j++) {
+
                     if(img[i][j] == 1) Console.BackgroundColor = ConsoleColor.Black;
                     else Console.BackgroundColor = ConsoleColor.White;
                     Console.Write("  ");
                     Console.BackgroundColor = ConsoleColor.Black;
                 }
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.Write("  ");
+                Console.BackgroundColor = ConsoleColor.Black;
                 Console.WriteLine();
             }
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.WriteLine("                                             ");
+            Console.BackgroundColor = ConsoleColor.Black;
         }
         static void PrintPixel(Rgba32 pixel) {
             if(isDark(pixel)) {
