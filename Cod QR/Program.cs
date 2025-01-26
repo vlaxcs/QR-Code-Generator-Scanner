@@ -1,13 +1,7 @@
-﻿Console.WriteLine("salut");
-Console.WriteLine("hello from dalv");
-Console.WriteLine("hello from Stefan");
-
-int x = 2;
-Console.WriteLine(x);
-int y = 3;
-Console.WriteLine(y);
-int z = 6;
-Console.WriteLine(z);
-int w = 69;
-Console.WriteLine(w);
-
+﻿using Cod_QR;
+//Console.WriteLine("hi");
+//Console.ReadLine();
+while(true) {
+    QRCodeImageParser.Parse("C:\\Dalv\\School\\University\\Classes\\ASC\\CodQR\\gabi.jpg");
+    Console.ReadLine();
+}
