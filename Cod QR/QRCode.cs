@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-class QRCode {
+public class QRCode {
     readonly int[][] code;
 
     public readonly int version;
 
     public readonly int[] data;
-    
+
     public DataType Datatype;
     public enum DataType {
         none = 0,
@@ -33,21 +33,45 @@ class QRCode {
             throw new Exception("Version is invalid");
         }
 
-        for(int i = 0; i < code.Length; i++) {
-            for(int j = 0; j < code.Length; j++) {
-                Console.Write(IsData(i, j) ? "#" : "_");
-            }
-            Console.WriteLine();
-        }
+        //for(int i = 0; i < code.Length; i++) {
+        //    for(int j = 0; j < code.Length; j++) {
+        //        Console.Write(IsData(i, j) ? "#" : "_");
+        //    }
+        //    Console.WriteLine();
+        //}
 
         data = GetData();
-
-        foreach(var indexer in data) {
-            Console.Write(indexer);
-        }
     }
 
 
+    public void Print() {
+        Console.BackgroundColor = ConsoleColor.White;
+        Console.WriteLine(new string(' ', code.Length * 2 + 4));
+
+        for(int i = 0; i < code.Length; i++) {
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.Write("  ");
+
+            for(int j = 0; j < code.Length; j++) {
+                if(code[i][j] == 1) Console.BackgroundColor = ConsoleColor.Black;
+                else Console.BackgroundColor = ConsoleColor.White;
+                Console.Write("  ");
+                Console.BackgroundColor = ConsoleColor.Black;
+            }
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.Write("  ");
+
+
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.WriteLine();
+        }
+
+        Console.BackgroundColor = ConsoleColor.White;
+        Console.WriteLine(new string(' ', code.Length * 2 + 4));
+
+        Console.BackgroundColor = ConsoleColor.Black;
+        Console.WriteLine("           ");
+    }
 
     public bool IsData(int x, int y) {
         int max_width = SizeForVersion(version);
