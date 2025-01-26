@@ -1,4 +1,7 @@
 ﻿using Cod_QR;
-Console.WriteLine("hi");
-Console.ReadLine();
-var code = new QRCodeImageParser("C:\\Dalv\\School\\University\\Classes\\ASC\\CodQR\\Reference.png");
+//Console.WriteLine("hi");
+//Console.ReadLine();
+while(true) {
+    QRCodeImageParser.Parse("C:\\Dalv\\School\\University\\Classes\\ASC\\CodQR\\dfr.png");
+    Console.ReadLine();
+}

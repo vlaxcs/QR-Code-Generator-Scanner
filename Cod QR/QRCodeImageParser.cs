@@ -7,49 +7,33 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
 namespace Cod_QR {
-    class QRCodeImageParser {
+    public static class QRCodeImageParser {
         const int BRIGHTNESS_THRESHOLD = 120;
-        static bool[][] alignmentMarker = {
-            new bool[] {true, true , true , true , true , true , true},
-            new bool[] {true, false, false, false, false, false, true},
-            new bool[] {true, false, true , true , true , false, true},
-            new bool[] {true, false, true , true , true , false, true},
-            new bool[] {true, false, true , true , true , false, true},
-            new bool[] {true, false, false, false, false, false, true},
-            new bool[] {true, true , true , true , true , true , true}
-        };
 
-        bool isDark(Rgba32 pixel) {
-            return (pixel.R + pixel.G + pixel.B) / 3 < BRIGHTNESS_THRESHOLD;
-        }
-
-        public QRCodeImageParser(string imagePath) {
+        public static void Parse(string imagePath) {
+            Console.SetCursorPosition(0, 0);
             var img = Image.Load<Rgba32>(imagePath);
 
             var bounds = DetermineBounds(img);
 
             int pixelSize = DeterminePixelSize(img, bounds);
 
-            // Create 2D array
-            int n = (bounds.right - bounds.left) / pixelSize;
-            bool[][] rawQR = new bool[n][];
-            for(int i = 0; i < n; i++) {
-                rawQR[i] = new bool[n];
-                for(int j = 0; j < n; j++) {
-                    rawQR[i][j] = DetermineModule(img, bounds, i, j, pixelSize);
+            int[][] rawQR = ExtractJaggedArray(img, bounds, pixelSize);
 
-                    if(rawQR[i][j]) Console.BackgroundColor = ConsoleColor.Black;
-                    else Console.BackgroundColor = ConsoleColor.White;
+            PrintImage(rawQR);
 
-                    Console.Write("  ");
-                }
-                Console.WriteLine();
-            }
+            Console.ReadLine();
+            Console.SetCursorPosition(0, 0);
 
-            //TODO: orientation check
+            CheckOrientation(rawQR);
         }
 
-        private void PrintImage(Image<Rgba32> img) {
+
+
+        static bool isDark(Rgba32 pixel) {
+            return (pixel.R + pixel.G + pixel.B) / 3 < BRIGHTNESS_THRESHOLD;
+        }
+        static void PrintImage(Image<Rgba32> img) {
             for(int i = 0; i < img.Height; i++) {
                 for(int j = 0; j < img.Width; j++) {
                     PrintPixel(img[j, i]);
@@ -58,7 +42,7 @@ namespace Cod_QR {
                 Console.WriteLine();
             }
         }
-        private void PrintImage(Image<Rgba32> img, Bounds bounds) {
+        static void PrintImage(Image<Rgba32> img, Bounds bounds) {
             for(int i = bounds.top; i < bounds.bottom; i++) {
                 for(int j = bounds.left; j < bounds.right; j++) {
                     PrintPixel(img[j, i]);
@@ -67,18 +51,31 @@ namespace Cod_QR {
                 Console.WriteLine();
             }
         }
-
-
-        private void PrintPixel(Rgba32 pixel) {
+        static void PrintImage(int[][] img) {
+            int n = img.Length;
+            for(int i = 0; i < n; i++) {
+                for(int j = 0; j < n; j++) {
+                    if(img[i][j] == 1) Console.BackgroundColor = ConsoleColor.Black;
+                    else Console.BackgroundColor = ConsoleColor.White;
+                    Console.Write("  ");
+                    Console.BackgroundColor = ConsoleColor.Black;
+                }
+                Console.WriteLine();
+            }
+        }
+        static void PrintPixel(Rgba32 pixel) {
             if(isDark(pixel)) {
                 Console.BackgroundColor = ConsoleColor.Black;
             } else {
                 Console.BackgroundColor = ConsoleColor.White;
             }
             Console.Write("  ");
+            Console.BackgroundColor = ConsoleColor.Black;
         }
 
-        private Bounds DetermineBounds(Image<Rgba32> img) {
+
+
+        static Bounds DetermineBounds(Image<Rgba32> img) {
             Bounds bounds = new Bounds();
 
             // Top bound
@@ -143,8 +140,7 @@ namespace Cod_QR {
 
             return bounds;
         }
-
-        private int DeterminePixelSize(Image<Rgba32> img, Bounds bounds) {
+        static int DeterminePixelSize(Image<Rgba32> img, Bounds bounds) {
             int pixelSize = 0, aux = 0;
             for(int i = 0; i < img.Width; i++) {
                 if(!isDark(img[bounds.left + i, bounds.top + i])) break;
@@ -154,23 +150,64 @@ namespace Cod_QR {
                 if(!isDark(img[bounds.left + i, bounds.bottom - 1 - i])) break;
                 aux++;
             }
-            if(pixelSize == 0) pixelSize = aux;
-            else pixelSize = Math.Min(pixelSize, aux);
+            if (pixelSize == 0) pixelSize = aux;
+            else if(aux != 0) pixelSize = Math.Min(pixelSize, aux);
 
             return pixelSize;
         }
+        static int[][] ExtractJaggedArray(Image<Rgba32> img, Bounds bounds, int pixelSize) {
+            int n = (bounds.right - bounds.left) / pixelSize;
+            int[][] rawQR = new int[n][];
+            for(int i = 0; i < n; i++) {
+                rawQR[i] = new int[n];
+                for(int j = 0; j < n; j++) {
+                    if(i == 25 && j == 25) {
+                        n = n + 1 - 1;
+                    }
 
-        private bool DetermineModule(Image<Rgba32> img, Bounds bounds, int i, int j, int pixelSize) {
-            int whites = 0, blacks = 0;
-            int im = (i + 1) * pixelSize; // i max
-            int jm = (j + 1) * pixelSize; // j max
-            for(int x = j * pixelSize; x < jm; x++) {
-                for(int y = i * pixelSize; y < im; y++) {
-                    if(isDark(img[x + bounds.left, y + bounds.top])) blacks++;
-                    else whites++;
+                    rawQR[i][j] = isDark(img[j * pixelSize + bounds.left + pixelSize / 2, i * pixelSize + bounds.top + pixelSize / 2]) ? 1 : 0;
                 }
             }
-            return blacks > whites / 2;
+
+            return rawQR;
+        }
+
+
+        static readonly Func<int, int, int, (int, int)>[] OrientationLUT = {
+            (i, j, n) => (i, j), // Empty corner Bottom Right
+            (i, j, n) => (j, n - i - 1), // Empty corner Bottom Left
+            (i, j, n) => (n - i - 1, n - j - 1), // Empty corner Top Left
+            (i, j, n) => (n - j - 1, i), // Empty corner Top Right
+        };
+        static void CheckOrientation(int[][] rawQR) {
+            int n = rawQR.Length;
+            bool bottomSymmetric = true, rightSymmetric = true;
+            // Check if bottom two alignment patterns match
+            for(int i = 0; i < 7; i++) {
+                for(int j = 0; j < 7; j++) {
+                    if(rawQR[n - i - 1][j] != rawQR[n - i - 1][n - j - 1]) bottomSymmetric = false;
+                    if(rawQR[i][n - j - 1] != rawQR[n - i - 1][n - j - 1]) rightSymmetric = false;
+                }
+            }
+
+            // 0 is correct, 1 is with empty corner bottom left, 2 is with empty corner top left, 3 is with empty corner top right
+            int orientation = 0;
+            if(!bottomSymmetric && rightSymmetric) orientation = 1;
+            if(bottomSymmetric && rightSymmetric) orientation = 2;
+            if(bottomSymmetric && !rightSymmetric) orientation = 3;
+
+            var Traverse = OrientationLUT[orientation];
+
+            int[][] correctQR = new int[n][];
+            for(int i = 0; i < n; i++) {
+                correctQR[i] = new int[n];
+                for(int j = 0; j < n; j++) {
+                    var (ni, nj) = Traverse(i, j, n);
+                    correctQR[i][j] = rawQR[ni][nj];
+                }
+            }
+
+            PrintImage(correctQR);
         }
     }
 }
