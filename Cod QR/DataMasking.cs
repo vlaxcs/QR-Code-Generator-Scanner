@@ -15,6 +15,4 @@ public class DataMasking {
         (i, j) => (i * j % 2 + i * j % 3) % 2 == 0,     // Mask 6
         (i, j) => ((i + j) % 2 + i * j % 3) % 2 == 0    // Mask 7
     };
-
-    public static void ApplyMask()
 }
