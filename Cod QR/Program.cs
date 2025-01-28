@@ -89,38 +89,31 @@ bool valid(int i, int j, int mask) {
         return false;
     }
     if(mask == 1) {
-        if(i % 2 == 0)
-            return true;
+        if(i % 2 == 0) return true;
         return false;
     }
     if(mask == 2) {
-        if(j % 3 == 0)
-            return true;
+        if(j % 3 == 0) return true;
         return false;
     }
     if(mask == 3) {
-        if((i + j) % 3 == 0)
-            return true;
+        if((i + j) % 3 == 0) return true;
         return false;
     }
     if(mask == 4) {
-        if((i / 2 + j / 3) % 2 == 0)
-            return true;
+        if((i / 2 + j / 3) % 2 == 0) return true;
         return false;
     }
     if(mask == 5) {
-        if(i * j % 2 + i * j % 3 == 0)
-            return true;
+        if(i * j % 2 + i * j % 3 == 0) return true;
         return false;
     }
     if(mask == 6) {
-        if(((i * j) % 2 + (i * j) % 3) % 2 == 0)
-            return true;
+        if(((i * j) % 2 + (i * j) % 3) % 2 == 0) return true;
         return false;
     }
     if(mask == 7) {
-        if(((i + j) % 2 + i * j % 3) % 2 == 0)
-            return true;
+        if(((i + j) % 2 + i * j % 3) % 2 == 0) return true;
         return false;
     }
     return false;
@@ -148,11 +141,6 @@ int detmask(int[,] mat) {
 ///
 
 
-void copiaza(int[,] mat1, int[,] mat, int n) {
-    for(int i = 0; i < n; i++)
-        for(int j = 0; j < n; j++)
-            mat1[i, j] = mat[i, j];
-}
 int part1(int[,] mat) {
     int ct = 0;
     int medie = 0;
@@ -316,7 +304,7 @@ void scriemask(int[,] mat, int mask, int n) {
 
 }
 Console.BackgroundColor = ConsoleColor.White;
-ReadMatrixFromFile(@"D:\Gabi\Proiecte\Cod QR\Cod QR\input.txt", mat, n);
+ReadMatrixFromFile(@"..\..\..\input.txt", mat, n);
 
 //for (int i = 0; i < n; i++)
 //{
