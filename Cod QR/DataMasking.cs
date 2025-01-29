@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public static class DataMasking {
-    static Func<int, int, bool>[] masks = {
+public  class DataMasking {
+     Func<int, int, bool>[] masks = {
         (i, j) => (i + j) % 2 == 0,                     // Mask 0
         (i, j) => i % 2 == 0,                           // Mask 1
         (i, j) => j % 3 == 0,                           // Mask 2

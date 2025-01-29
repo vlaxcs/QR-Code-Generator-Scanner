@@ -11,7 +11,7 @@ public class QRCode {
     public readonly int[] data;
 
     /* Data masking */
-    static Func<int, int, bool>[] masks = {
+     Func<int, int, bool>[] masks = {
         (i, j) => (i + j) % 2 == 0,                     // Mask 0
         (i, j) => i % 2 == 0,                           // Mask 1
         (i, j) => j % 3 == 0,                           // Mask 2

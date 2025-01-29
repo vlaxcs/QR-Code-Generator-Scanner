@@ -7,10 +7,10 @@ using Cod_QR;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
-public static class QRCodeImageParser {
+public  class QRCodeImageParser {
     const int BRIGHTNESS_THRESHOLD = 30;
 
-    public static QRCode Parse(string imagePath) {
+    public  QRCode Parse(string imagePath) {
         var img = Image.Load<Rgba32>(imagePath);
 
         var bounds = DetermineBounds(img);
@@ -26,14 +26,14 @@ public static class QRCodeImageParser {
 
 
 
-    static bool IsDark(Rgba32 pixel) {
+     bool IsDark(Rgba32 pixel) {
         return (pixel.R + pixel.G + pixel.B) / 3 < BRIGHTNESS_THRESHOLD;
     }
     
 
 
 
-    static Bounds DetermineBounds(Image<Rgba32> img) {
+     Bounds DetermineBounds(Image<Rgba32> img) {
         Bounds bounds = new Bounds();
 
         // Top bound
@@ -98,7 +98,7 @@ public static class QRCodeImageParser {
 
         return bounds;
     }
-    static int DeterminePixelSize(Image<Rgba32> img, Bounds bounds) {
+     int DeterminePixelSize(Image<Rgba32> img, Bounds bounds) {
         int pixelSize = 0, aux = 0;
         for(int i = 0; i < img.Width; i++) {
             if(!IsDark(img[bounds.left + i, bounds.top + i])) break;
@@ -113,7 +113,7 @@ public static class QRCodeImageParser {
 
         return pixelSize;
     }
-    static int[][] ExtractJaggedArray(Image<Rgba32> img, Bounds bounds, int pixelSize) {
+     int[][] ExtractJaggedArray(Image<Rgba32> img, Bounds bounds, int pixelSize) {
         int n = (bounds.right - bounds.left) / pixelSize;
         int[][] rawQR = new int[n][];
         for(int i = 0; i < n; i++) {
@@ -131,13 +131,13 @@ public static class QRCodeImageParser {
     }
 
 
-    static readonly Func<int, int, int, (int, int)>[] OrientationLUT = {
+     readonly Func<int, int, int, (int, int)>[] OrientationLUT = {
             (i, j, n) => (i, j), // Empty corner Bottom Right
             (i, j, n) => (j, n - i - 1), // Empty corner Bottom Left
             (i, j, n) => (n - i - 1, n - j - 1), // Empty corner Top Left
             (i, j, n) => (n - j - 1, i), // Empty corner Top Right
         };
-    static int[][] CheckOrientation(int[][] rawQR) {
+     int[][] CheckOrientation(int[][] rawQR) {
         int n = rawQR.Length;
         bool bottomSymmetric = true, rightSymmetric = true;
         // Check if bottom two alignment patterns match

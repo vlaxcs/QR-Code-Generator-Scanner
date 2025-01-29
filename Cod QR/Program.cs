@@ -2,6 +2,10 @@
 using System.Xml.Linq;
 using Cod_QR;
 
+var test = new Testing();
+test.Main();
+
+return;
 int[][] ReadMatrixFromFile(string filePath) {
     var lines = File.ReadAllLines(filePath);
     int[][] res = new int[lines.Length][];
