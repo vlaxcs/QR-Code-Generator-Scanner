@@ -1,23 +1,3 @@
-
-.vs/Cod QR/FileContentIndex/91694c26-af6b-4052-8169-3ea806501da2.vsidx
-/.vs/Cod QR/FileContentIndex
-/CodQR/Cod QR/bin/*
-/CodQR/Cod QR/obj/*
-.vs/*
-.gitignore
-/.gitignore
-/.gitignore
-/.gitignore
-/.vs/Cod QR/DesignTimeBuild/.dtbcache.v2
-/.vs/QR-Code-Generator-Scanner/v17/.wsuo
-/Cod QR/obj/Cod QR.csproj.nuget.dgspec.json
-/Cod QR/obj/Cod QR.csproj.nuget.g.props
-/Cod QR/obj/Debug/net6.0/Cod QR.AssemblyInfo.cs
-/Cod QR/obj/Debug/net6.0/Cod QR.AssemblyInfoInputs.cache
-/Cod QR/obj/Debug/net6.0/Cod QR.assets.cache
-/Cod QR/obj/Debug/net6.0/Cod QR.csproj.AssemblyReference.cache
-/Cod QR/obj/Debug/net6.0/Cod QR.GeneratedMSBuildEditorConfig.editorconfig
-/Cod QR/obj/project.assets.json
-/Cod QR/obj/project.nuget.cache
-/.vs/Cod QR/v17/DocumentLayout.json
-/.vs/Cod QR/v17/.suo
+/Cod QR/bin/*
+/Cod QR/obj/*
+/.vs/*
