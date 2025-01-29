@@ -8,6 +8,7 @@ public class GaloisField {
         this.nsym = nsym;
     }
 
+
     public int[] rs_correct_msg(int[] msg_in, int nsym) {
         if(msg_in.Length > 255) throw new Exception("Message too long");
         int[] msg_out = (int[])msg_in.Clone();
