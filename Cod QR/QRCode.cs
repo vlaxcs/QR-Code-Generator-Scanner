@@ -13,7 +13,7 @@ public class QRCode {
 
     //For Debuging Propurses
     public int maskUsed;
-    public readonly byte[] data;
+    public readonly byte[] data; 
 
     // Data masking
     static Func<int, int, bool>[] masks = {
