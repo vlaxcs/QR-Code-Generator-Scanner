@@ -28,3 +28,5 @@ D:\Gabi\Proiecte\Cod QR\Cod QR\obj\Debug\net6.0\refint\Cod QR.dll
 D:\Gabi\Proiecte\Cod QR\Cod QR\obj\Debug\net6.0\Cod QR.pdb
 D:\Gabi\Proiecte\Cod QR\Cod QR\obj\Debug\net6.0\Cod QR.genruntimeconfig.cache
 D:\Gabi\Proiecte\Cod QR\Cod QR\obj\Debug\net6.0\ref\Cod QR.dll
+C:\Users\vladx\source\repos\vlaxcs\QR-Code-Generator-Scanner\Cod QR\bin\Debug\net6.0\SixLabors.ImageSharp.dll
+C:\Users\vladx\source\repos\vlaxcs\QR-Code-Generator-Scanner\Cod QR\obj\Debug\net6.0\Cod QR.csproj.CopyComplete
