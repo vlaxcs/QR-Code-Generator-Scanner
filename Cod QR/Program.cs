@@ -1,9 +1,13 @@
 ﻿using System.Collections;
+using System.Text;
 using System.Xml.Linq;
 using Cod_QR;
 
-var test = new Testing();
-test.Main();
+var test = new GaloisField(12);
+
+var res = test.Decode(new byte[]{ 104, 101, 108, 108, 111, 32, 119, 111, 114, 88, 88, 88, 88, 121, 178, 88, 88, 1, 113, 185, 227, 226, 61 });
+Console.WriteLine(Encoding.Default.GetString(res));
+
 
 return;
 int[][] ReadMatrixFromFile(string filePath) {

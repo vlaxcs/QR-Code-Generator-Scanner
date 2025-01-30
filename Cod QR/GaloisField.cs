@@ -12,6 +12,8 @@ public class GaloisField {
 
     public GaloisField(int nsym = 10) {
         this.nsym = nsym;
+
+        GeneratePolynomials();
     }
 
     public void GeneratePolynomials() {
@@ -46,12 +48,11 @@ public class GaloisField {
 
 
     public int[] PolyMul(int[] p, int[] q) {
-        int pLen = p.Length, qLen = q.Length;
-        int rLen = Math.Max(p.Length, q.Length);
+        int rLen = p.Length +  q.Length - 1;
         int[] r = new int[rLen];
 
-        for(int j = 0; j < qLen; ++j)
-            for(int i = 0; i < pLen; ++i)
+        for(int j = 0; j < q.Length; ++j)
+            for(int i = 0; i < p.Length; ++i)
                 r[i + j] ^= Multiply(p[i], q[j]);
 
         return r;
@@ -76,7 +77,7 @@ public class GaloisField {
         for(int i = 0; i < pLen; ++i) result[i] = Multiply(p[i], x);
         return result;
     }
-    private int PolyEval(int[] p, int x) {
+    public int PolyEval(int[] p, int x) {
         int y = p[0];
         for(int i = 1; i < p.Length; i++) {
             y = Multiply(y, x) ^ p[i];
@@ -87,7 +88,7 @@ public class GaloisField {
 
 
     public int[] RSGeneratorPoly(int nsym) {
-        int[] g = new int[nsym]; // not fucking sure
+        int[] g = new int[] { 1 }; // not fucking sure
         for(int i = 0; i < nsym; i++) g = PolyMul(g, new int[] { 1, exp[i] });
         return g;
     }
@@ -101,10 +102,10 @@ public class GaloisField {
             outputMessage[i] = inputMessage[i];
         }
         for(int i = 0; i < inputMessage.Length; i++) {
-            int coef = inputMessage[i];
+            int coef = outputMessage[i];
             if(coef != 0)
                 for(int j = 0; j < gen.Length; j++)
-                    inputMessage[i + j] ^= Multiply(gen[j], coef);
+                    outputMessage[i + j] ^= Multiply(gen[j], coef);
         }
         for(int i = 0; i < inputMessage.Length; i++) {
             outputMessage[i] = inputMessage[i];
@@ -131,7 +132,7 @@ public class GaloisField {
     }
     public int[] RSCorrectMsg(byte[] msg_in, int nsym) {
         if(msg_in.Length > 255) throw new Exception("Message too long");
-        int[] msg_out = (int[])msg_in.Clone();
+        int[] msg_out = msg_in.Select((x) => (int)x).ToArray();
 
         // Find erasures
         List<int> erase_pos = new List<int>();
@@ -161,13 +162,15 @@ public class GaloisField {
 
         return msg_out.Take(msg_out.Length - nsym).ToArray();
     }
-    private void RSCorrectErrata(int[] msg, int[] synd, int[] pos) {
+    public void RSCorrectErrata(int[] msg, int[] synd, int[] pos) {
         int[] q = { 1 };
         for(int i = 0; i < pos.Length; i++) {
             int x = exp[msg.Length - 1 - pos[i]];
             q = PolyMul(q, new int[] { x, 1 });
         }
         var p = synd.Take(pos.Length).ToArray();
+        p = p.Reverse().ToArray();
+        p = PolyMul(p, q);
         p = p[^pos.Length..];
 
         // formal derivative of error locator eliminates even terms
@@ -184,7 +187,7 @@ public class GaloisField {
             msg[pos[i]] ^= Divide(y, Multiply(x, z));
         }
     }
-    private int[]? RSFindErrors(int[] synd, int nmess) {
+    public int[]? RSFindErrors(int[] synd, int nmess) {
         int[] err_poly = { 1 };
         List<int> old_poly = new List<int>() { 1 };
         for(int i = 0; i < synd.Length; i++) {
@@ -218,7 +221,7 @@ public class GaloisField {
     public byte[] Decode(byte[] data) {
         var dec = new List<byte>();
         for(int i = 0; i < data.Length; i += 255) {
-            byte[] chunk = data[i..(i + 255)];
+            var chunk = data[i..Math.Clamp(i + 255, 0, data.Length)];
             dec.AddRange(RSCorrectMsg(chunk, nsym).Select((x) => (byte)x));
         }
         return dec.ToArray();
@@ -231,7 +234,7 @@ public class GaloisField {
         int chunk_size = 255 - nsym;
         var enc = new List<byte>();
         for(int i = 0; i < data.Length; i += chunk_size) {
-            var chunk = data[i..(i + chunk_size)];
+            var chunk = data[i..Math.Clamp(i + chunk_size, 0, data.Length)];
             enc.AddRange(RSEncodeMsg(chunk.Select((x) => (int)x).ToArray(), nsym).Select((x) => (byte)x));
         }
         return enc.ToArray();
