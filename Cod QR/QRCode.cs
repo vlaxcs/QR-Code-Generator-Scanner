@@ -118,6 +118,35 @@ public class QRCode {
         //TODO:Find Something more elegant
         ApplyMask(maskUsed);
         data = GetAllDataBlocks();
+
+        // Apply error correction
+        int nsym = blocksByECC[version - 1][errorCorrectionLevel - 1];
+        var gf = new GaloisField(nsym);
+
+        data = gf.Decode(data);
+
+        List<byte> bits = new List<byte>();
+        for(int i = 0; i < data.Length; i++) {
+            for(int j = 7; j >= 0; j--) {
+                bits.Add((byte)((data[i] >> j) & 1));
+            }
+        }
+
+        int messageLen = 0;
+        for(int i = 4; i < 12; i++) {
+            messageLen |= (bits[i] & 1) << (11 - i);
+        }
+        int[] message = new int[messageLen];
+        int blockSize = 8;
+        var sb = new StringBuilder();
+        for(int i = 0; i < message.Length; i++) {
+            message[i] = 0;
+            for(int b = 0; b < blockSize; b++) {
+                message[i] |= (bits[12 + i * blockSize + b] & 1) << (blockSize - b - 1);
+            }
+            sb.Append((char)message[i]);
+        }
+        Console.WriteLine(sb.ToString());
     }
 
     public void Print(bool masked = true) {
@@ -281,22 +310,20 @@ public class QRCode {
             }
         }
 
-        Console.ForegroundColor = ConsoleColor.Red;
         byte[] blocks = new byte[ans.Count / 8];
         for(int i = 0; i < blocks.Length; i++) {
             blocks[i] = (byte)(ans[i * 8] << 7);
             for(int j = 1; j < 8; j++) {
                 blocks[i] |= (byte)(ans[i * 8 + j] << (7 - j));
             }
-
-            Console.Write($"{Convert.ToString(blocks[i], 16)} ");
         }
-        Console.ForegroundColor = ConsoleColor.White;
 
         datatype = (DataType)((ans[0]) << 3 | ans[1] << 2 | ans[2] << 1 | ans[3]);
         return blocks;
     }
 
+    
+    
     // Get the most simnificant bit
     int MostSignificantBit(int x) {
         int cx = x;

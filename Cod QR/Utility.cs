@@ -1,4 +1,17 @@
 ﻿public static class Utility {
+
+    public static int[][] ReadMatrixFromFile(string filePath) {
+        var lines = File.ReadAllLines(filePath);
+        int[][] res = new int[lines.Length][];
+        for(int i = 0; i < lines.Length; i++) {
+            res[i] = new int[lines[i].Length];
+            for(int j = 0; j < lines[i].Length; j++) {
+                res[i][j] = Convert.ToInt32(lines[i][j]) - 48;
+            }
+        }
+        return res;
+    }
+
     public static int BinaryArea(int[] array, int left, int right) {
         int decify(int[] array, int currPow) {
             int result = 0;
