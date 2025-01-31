@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Numerics;
-using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
-public class QRCode {
+public partial class QRCode {
     readonly int[][] code;
     public readonly int version, errorCorrectionLevel;
 
@@ -28,56 +21,7 @@ public class QRCode {
     };
 
     public DataType datatype;
-    public enum DataType {
-        None = 0,
-        Numeric = 1,
-        Alphanumeric = 2,
-        Byte = 4,
-        Kanji = 8
-    }
 
-    int[][] blocksByECC = {
-        new int[]{7, 10, 13, 17},
-        new int[]{10, 16, 22, 28},
-        new int[]{15, 26, 36, 44},
-        new int[]{20, 36, 52, 64},
-        new int[]{26, 48, 72, 88},
-        new int[]{36, 64, 96, 112},
-        new int[]{40, 72, 108, 130},
-        new int[]{48, 88, 132, 156},
-        new int[]{60, 110, 160, 192},
-        new int[]{72, 130, 192, 224},
-        new int[]{80, 150, 224, 264},
-        new int[]{96, 176, 260, 308},
-        new int[]{104, 198, 288, 352},
-        new int[]{120, 216, 320, 384},
-        new int[]{132, 240, 360, 432},
-        new int[]{144, 280, 408, 480},
-        new int[]{168, 308, 448, 532},
-        new int[]{180, 338, 504, 588},
-        new int[]{196, 364, 546, 650},
-        new int[]{224, 416, 600, 700},
-        new int[]{224, 442, 644, 750},
-        new int[]{252, 476, 690, 816},
-        new int[]{270, 504, 750, 900},
-        new int[]{300, 560, 810, 960},
-        new int[]{312, 588, 870, 1050},
-        new int[]{336, 644, 952, 1110},
-        new int[]{360, 700, 1020, 1200},
-        new int[]{390, 728, 1050, 1260},
-        new int[]{420, 784, 1140, 1350},
-        new int[]{450, 812, 1200, 1440},
-        new int[]{480, 868, 1290, 1530},
-        new int[]{510, 924, 1350, 1620},
-        new int[]{540, 980, 1440, 1710},
-        new int[]{570, 1036, 1530, 1800},
-        new int[]{570, 1064, 1590, 1890},
-        new int[]{600, 1120, 1680, 1980},
-        new int[]{630, 1204, 1770, 2100},
-        new int[]{660, 1260, 1860, 2220},
-        new int[]{720, 1316, 1950, 2310},
-        new int[]{750, 1372, 2040, 2430}
-    };
 
     public QRCode(int[][] mat) {
         code = mat;
@@ -115,38 +59,8 @@ public class QRCode {
         maskUsed = (mask1 >> 10) & 7 ^ 5;
         errorCorrectionLevel = (mask1 >> 13) ^ 2;
 
-        //TODO:Find Something more elegant
         ApplyMask(maskUsed);
         data = GetAllDataBlocks();
-
-        // Apply error correction
-        int nsym = blocksByECC[version - 1][errorCorrectionLevel - 1];
-        var gf = new GaloisField(nsym);
-
-        data = gf.Decode(data);
-
-        List<byte> bits = new List<byte>();
-        for(int i = 0; i < data.Length; i++) {
-            for(int j = 7; j >= 0; j--) {
-                bits.Add((byte)((data[i] >> j) & 1));
-            }
-        }
-
-        int messageLen = 0;
-        for(int i = 4; i < 12; i++) {
-            messageLen |= (bits[i] & 1) << (11 - i);
-        }
-        int[] message = new int[messageLen];
-        int blockSize = 8;
-        var sb = new StringBuilder();
-        for(int i = 0; i < message.Length; i++) {
-            message[i] = 0;
-            for(int b = 0; b < blockSize; b++) {
-                message[i] |= (bits[12 + i * blockSize + b] & 1) << (blockSize - b - 1);
-            }
-            sb.Append((char)message[i]);
-        }
-        Console.WriteLine(sb.ToString());
     }
 
     public void Print(bool masked = true) {
@@ -323,16 +237,6 @@ public class QRCode {
     }
 
     
-    
-    // Get the most simnificant bit
-    int MostSignificantBit(int x) {
-        int cx = x;
-        while(x != 0) {
-            cx = x;
-            x = x & (x - 1);
-        }
-        return cx;
-    }
 
     // Get all the bits for ecc and mask pattern
     int GetMaskBits(int ECCLevel, int maskPattern) {
@@ -341,8 +245,8 @@ public class QRCode {
         nr <<= 10;
         int gen = 0x0537; // 10100110111 is the generator=0x0537
         int initGen = gen;
-        while(MostSignificantBit(nr) >= 1024) {
-            while(MostSignificantBit(gen) < MostSignificantBit(nr)) {
+        while(nr.MostSignificantBit() >= 1024) {
+            while(gen.MostSignificantBit() < nr.MostSignificantBit()) {
                 gen <<= 1;
             }
             nr ^= gen;
@@ -354,8 +258,7 @@ public class QRCode {
     }
 
 
-
-    public int ApplyMask(int mask) {
+    void ApplyMask(int mask) {
         for(int i = 0; i < code.Length; i++) {
             for(int j = 0; j < code.Length; j++) {
                 if(!IsData(i, j) || !masks[mask](i, j)) continue;
@@ -383,10 +286,12 @@ public class QRCode {
             code[8][code.Length - 1 - j] = (maskBits >> j) & 1;
         }
         maskUsed = mask;
-        return CalculatePenaltyScore();
     }
+}
 
-    int CalculatePenaltyScore() {
+// TO PUT IN GENERATOR:
+/*
+int CalculatePenaltyScore() {
         int consecutives = 0;
         int score = 0;
 
@@ -473,4 +378,4 @@ public class QRCode {
 
         return score;
     }
-}
+*/

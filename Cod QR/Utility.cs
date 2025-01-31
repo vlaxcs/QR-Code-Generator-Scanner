@@ -1,4 +1,12 @@
 ﻿public static class Utility {
+    public static int MostSignificantBit(this int x) {
+        int cx = x;
+        while(x != 0) {
+            cx = x;
+            x = x & (x - 1);
+        }
+        return cx;
+    }
 
     public static int[][] ReadMatrixFromFile(string filePath) {
         var lines = File.ReadAllLines(filePath);
