@@ -206,7 +206,7 @@ public class GaloisField {
             }
         }
         int errs = err_poly.Length - 1;
-        if(errs * 2 > synd.Length) throw new Exception("Too many errors to connect");
+        if(errs * 2 > synd.Length) throw new Exception("Too many errors to correct");
         List<int> err_pos = new List<int>();
         for(int i = 0; i < nmess; i++) {
             if(PolyEval(err_poly, exp[255 - i]) == 0) {
