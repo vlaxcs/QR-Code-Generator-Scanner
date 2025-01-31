@@ -55,10 +55,10 @@ public static class QRCodeDecoder {
 
         var data = gf.Decode(code.data);
 
-        List<byte> bits = new List<byte>();
+        List<int> bits = new List<int>();
         for(int i = 0; i < data.Length; i++) {
             for(int j = 7; j >= 0; j--) {
-                bits.Add((byte)((data[i] >> j) & 1));
+                bits.Add((data[i] >> j) & 1);
             }
         }
 
@@ -68,19 +68,40 @@ public static class QRCodeDecoder {
         for(int i = 4; i < 4 + encodingRange; i++)
             messageLen += bits[i] * (1 << (encodingRange - i + 3));
 
+        int[] message = null;
+
+        switch(code.datatype) {
+            case DataType.Numeric:
+                throw new Exception("UNIMPLEMENTED decoding data type");
+            case DataType.Alphanumeric:
+                message = DecodeAlphanumericMessage(bits.ToArray(), messageLen, encodingRange);
+                break;
+            case DataType.Byte:
+                message = DecodeByteMessage(bits.ToArray(), messageLen, encodingRange);
+                break;
+            case DataType.Kanji:
+                throw new Exception("UNIMPLEMENTED decoding data type");
+        }
+
+        return message;
+    }
+
+    static int[] DecodeAlphanumericMessage(int[] bits, int messageLen, int encodingRange) {
+
+
+
+        return new int[] { 1 };
+    }
+
+    static int[] DecodeByteMessage(int[] bits, int messageLen, int encodingRange) {
         int[] message = new int[messageLen];
         int blockSize = 8;
-        var sb = new StringBuilder();
         for(int i = 0; i < message.Length; i++) {
             message[i] = 0;
-            Console.WriteLine(sb.ToString());
             for(int b = 0; b < blockSize; b++) {
                 message[i] |= (bits[encodingRange + 4 + i * blockSize + b] & 1) << (blockSize - b - 1);
             }
-            Console.WriteLine(message[i]);
-            sb.Append(alphanumericConversion[message[i]]);
         }
-
         return message;
     }
 }
