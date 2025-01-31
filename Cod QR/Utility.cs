@@ -32,15 +32,15 @@
         return decify(binary, upperPow);
     }
 
-    public static int ComputeEncodingRange(string type, int version) {
+    public static int ComputeEncodingRange(DataType type, int version) {
         int encodingMinVersion = 1, encodingMaxVersion = 40;
         if(encodingMinVersion > version || version > encodingMaxVersion) throw new Exception("Unsupported QR Code version!");
         int i = (version + 7) / 17;
         switch(type) {
-            case "Numeric": { int[] blockSizes = { 10, 12, 14 }; return blockSizes[i]; }       // Numeric encoding (10/12/14 bits per 3 digits)
-            case "Alphanumeric": { int[] blockSizes = { 9, 11, 13 }; return blockSizes[i]; }  // Alphanumeric encoding (9/11/13 bits per 2 characters)
-            case "Byte": { int[] blockSizes = { 8, 16, 16 }; return blockSizes[i]; }         // Byte encoding (8/16/16 bits per character) 
-            case "Kanji": { int[] blockSizes = { 8, 10, 12 }; return blockSizes[i]; }       // Kanji encoding (8/10/12 bits per character)
+            case DataType.Numeric: { int[] blockSizes = { 10, 12, 14 }; return blockSizes[i]; }       // Numeric encoding (10/12/14 bits per 3 digits)
+            case DataType.Alphanumeric: { int[] blockSizes = { 9, 11, 13 }; return blockSizes[i]; }  // Alphanumeric encoding (9/11/13 bits per 2 characters)
+            case DataType.Byte: { int[] blockSizes = { 8, 16, 16 }; return blockSizes[i]; }         // Byte encoding (8/16/16 bits per character) 
+            case DataType.Kanji: { int[] blockSizes = { 8, 10, 12 }; return blockSizes[i]; }       // Kanji encoding (8/10/12 bits per character)
             default: { throw new Exception("Unsupported QR Code version!"); }
         }
     }

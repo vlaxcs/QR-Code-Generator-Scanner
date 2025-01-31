@@ -2,7 +2,7 @@
 
 var arr = Utility.ReadMatrixFromFile(@"../../../input.txt");
 
-// var code = new QRCode(arr);
+//var code = new QRCode(arr);
 var code = QRCodeImageParser.Parse(@"../../../../Reference.png");
 
 code.Print();

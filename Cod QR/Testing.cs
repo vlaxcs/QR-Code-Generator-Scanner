@@ -28,7 +28,8 @@
         Console.WriteLine($"[RAW DATA] Encoding VERSION: {encodingVersion}");
 
         // Sets the codeword blocks' size in 'encodingRange'
-        int encodingRange = Utility.ComputeEncodingRange(encodingType, encodingVersion);
+        //int encodingRange = Utility.ComputeEncodingRange(encodingType, encodingVersion);
+        int encodingRange = 8;
         Console.WriteLine($"[RAW DATA] Encoding RANGE: {encodingRange}");
 
         // From [Stefan]

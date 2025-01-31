@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 public static class QRCodeDecoder {
     static readonly int[][] blocksByECL = {
@@ -47,7 +48,6 @@ public static class QRCodeDecoder {
 
     public static int[] DecodeQR(QRCode code) {
         // Apply error correction
-        Console.WriteLine(code.errorCorrectionLevel - 1);
         int nsym = blocksByECL[code.version - 1][code.errorCorrectionLevel - 1];
         var gf = new GaloisField(nsym);
 
@@ -60,18 +60,21 @@ public static class QRCodeDecoder {
             }
         }
 
+        int encodingRange = Utility.ComputeEncodingRange(code.datatype, code.version);
+
         int messageLen = 0;
-        for(int i = 4; i < 12; i++) {
-            messageLen |= (bits[i] & 1) << (11 - i);
-        }
+        for(int i = 4; i < 4 + encodingRange; i++)
+            messageLen += bits[i] * (1 << (encodingRange - i + 3));
+
         int[] message = new int[messageLen];
         int blockSize = 8;
         var sb = new StringBuilder();
         for(int i = 0; i < message.Length; i++) {
             message[i] = 0;
             for(int b = 0; b < blockSize; b++) {
-                message[i] |= (bits[12 + i * blockSize + b] & 1) << (blockSize - b - 1);
+                message[i] |= (bits[encodingRange + 4 + i * blockSize + b] & 1) << (blockSize - b - 1);
             }
+            sb.Append((char)message[i]);
         }
 
         return message;
