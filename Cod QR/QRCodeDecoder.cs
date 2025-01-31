@@ -46,9 +46,11 @@ public static class QRCodeDecoder {
         new int[]{750, 1372, 2040, 2430}
     };
 
+    static readonly char[] alphanumericConversion = { '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',' ','$','%','*','+','-','.','/',':'};
+
     public static int[] DecodeQR(QRCode code) {
         // Apply error correction
-        int nsym = blocksByECL[code.version - 1][code.errorCorrectionLevel - 1];
+        int nsym = blocksByECL[code.version - 1][code.errorCorrectionLevel];
         var gf = new GaloisField(nsym);
 
         var data = gf.Decode(code.data);
@@ -71,10 +73,12 @@ public static class QRCodeDecoder {
         var sb = new StringBuilder();
         for(int i = 0; i < message.Length; i++) {
             message[i] = 0;
+            Console.WriteLine(sb.ToString());
             for(int b = 0; b < blockSize; b++) {
                 message[i] |= (bits[encodingRange + 4 + i * blockSize + b] & 1) << (blockSize - b - 1);
             }
-            sb.Append((char)message[i]);
+            Console.WriteLine(message[i]);
+            sb.Append(alphanumericConversion[message[i]]);
         }
 
         return message;

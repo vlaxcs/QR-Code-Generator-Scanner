@@ -3,10 +3,8 @@
 public partial class QRCode {
     readonly int[][] code;
     public readonly int version, errorCorrectionLevel;
-
-    //For Debuging Propurses
-    public int maskUsed;
     public readonly byte[] data; 
+
 
     // Data masking
     static Func<int, int, bool>[] masks = {
@@ -19,12 +17,14 @@ public partial class QRCode {
         (i, j) => (i * j % 2 + i * j % 3) % 2 == 0,     // Mask 6
         (i, j) => ((i + j) % 2 + i * j % 3) % 2 == 0    // Mask 7
     };
+    int maskUsed;
 
     public DataType datatype;
 
 
     public QRCode(int[][] mat) {
         code = mat;
+
         if((code.Length - 17) % 4 != 0) {
             throw new Exception("Size is invalid");
         }
@@ -57,7 +57,7 @@ public partial class QRCode {
         mask2 = GetClosestDataEC(mask2);
         if(mask1 != mask2) throw new Exception("Mask bits dont match");
         maskUsed = (mask1 >> 10) & 7 ^ 5;
-        errorCorrectionLevel = (mask1 >> 13) ^ 2;
+        errorCorrectionLevel = (mask1 >> 13) ^ 3;
 
         ApplyMask(maskUsed);
         data = GetAllDataBlocks();
