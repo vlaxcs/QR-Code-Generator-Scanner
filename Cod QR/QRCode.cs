@@ -56,8 +56,8 @@ public partial class QRCode {
         mask1 = GetClosestDataEC(mask1);
         mask2 = GetClosestDataEC(mask2);
         if(mask1 != mask2) throw new Exception("Mask bits dont match");
-        maskUsed = (mask1 >> 10) & 7 ^ 5;
-        errorCorrectionLevel = (mask1 >> 13) ^ 2;
+        maskUsed = ((mask1 >> 10) & 7) ^ 5;
+        errorCorrectionLevel = (mask1 >> 13) ^ 3;
 
         ApplyMask(maskUsed);
         data = GetAllDataBlocks();

@@ -48,7 +48,7 @@ public static class QRCodeDecoder {
 
     public static int[] DecodeQR(QRCode code) {
         // Apply error correction
-        int nsym = blocksByECL[code.version - 1][code.errorCorrectionLevel - 1];
+        int nsym = blocksByECL[code.version - 1][code.errorCorrectionLevel ];
         var gf = new GaloisField(nsym);
 
         var data = gf.Decode(code.data);
