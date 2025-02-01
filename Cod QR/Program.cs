@@ -5,8 +5,7 @@ using Cod_QR;
 
 //var test = new Generator();
 
-var testing = new Testing();
-testing.Main();
+var testing = new Generator();
 return;
 
 
