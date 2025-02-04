@@ -1,10 +1,38 @@
-﻿using System.Text;
+﻿using System.Collections;
+using System.Text;
+using System.Xml.Linq;
+using Cod_QR;
 
-var arr = Utility.ReadMatrixFromFile(@"../../../input.txt");
+//var test = new Generator();
 
-//var code = new QRCode(arr);
-var code = QRCodeImageParser.Parse(@"../../../../Alphanumeric.png");
+var testing = new Generator();
+return;
+
+
+int[][] ReadMatrixFromFile(string filePath) {
+    var lines = File.ReadAllLines(filePath);
+    int[][] res = new int[lines.Length][];
+    for(int i = 0; i < lines.Length; i++) {
+        res[i] = new int[lines[i].Length];
+        for(int j = 0; j < lines[i].Length; j++) {
+            res[i][j] = Convert.ToInt32(lines[i][j]) - 48;
+            Console.Write(res[i][j] + " ");
+        }
+        Console.WriteLine();
+    }
+    return res;
+}
+
+var arr = ReadMatrixFromFile(@"../../../input.txt");
+
+var code = new QRCode(arr);
 
 code.Print();
 
-var res = QRCodeDecoder.DecodeQR(code);
+for(int i = 0; i < 8; i++) {
+    Console.WriteLine($"\n\n\nMask {i}:\n");
+    int score = code.ApplyMask(i);
+    code.Print();
+    code.ApplyMask(i);
+    Console.WriteLine($"\nScore {score}\n");
+}

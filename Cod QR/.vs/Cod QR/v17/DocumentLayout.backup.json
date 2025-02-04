@@ -1,0 +1,197 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Gabi\\Proiecte\\Cod QR\\Cod QR\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Gabi\\Proiecte\\Cod QR\\Cod QR\\Generator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Generator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Gabi\\Proiecte\\Cod QR\\Cod QR\\input.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:input.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Gabi\\Proiecte\\Cod QR\\Cod QR\\GaloisField.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:GaloisField.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Gabi\\Proiecte\\Cod QR\\Cod QR\\Bounds.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Bounds.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Gabi\\Proiecte\\Cod QR\\Cod QR\\Cod QR.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Cod QR.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Gabi\\Proiecte\\Cod QR\\Cod QR\\Utility.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Utility.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Gabi\\Proiecte\\Cod QR\\Cod QR\\Testing.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Testing.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Gabi\\Proiecte\\Cod QR\\Cod QR\\QRCodeImageParser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:QRCodeImageParser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Gabi\\Proiecte\\Cod QR\\Cod QR\\QRCode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:QRCode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Gabi\\Proiecte\\Cod QR\\Cod QR\\Program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 4,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Generator.cs",
+              "DocumentMoniker": "D:\\Gabi\\Proiecte\\Cod QR\\Cod QR\\Generator.cs",
+              "RelativeDocumentMoniker": "Generator.cs",
+              "ToolTip": "D:\\Gabi\\Proiecte\\Cod QR\\Cod QR\\Generator.cs",
+              "RelativeToolTip": "Generator.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-04T21:31:14.081Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "input.txt",
+              "DocumentMoniker": "D:\\Gabi\\Proiecte\\Cod QR\\Cod QR\\input.txt",
+              "RelativeDocumentMoniker": "input.txt",
+              "ToolTip": "D:\\Gabi\\Proiecte\\Cod QR\\Cod QR\\input.txt",
+              "RelativeToolTip": "input.txt",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
+              "WhenOpened": "2025-02-04T21:29:49.977Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Bounds.cs",
+              "DocumentMoniker": "D:\\Gabi\\Proiecte\\Cod QR\\Cod QR\\Bounds.cs",
+              "RelativeDocumentMoniker": "Bounds.cs",
+              "ToolTip": "D:\\Gabi\\Proiecte\\Cod QR\\Cod QR\\Bounds.cs",
+              "RelativeToolTip": "Bounds.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-04T21:29:48.394Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Utility.cs",
+              "DocumentMoniker": "D:\\Gabi\\Proiecte\\Cod QR\\Cod QR\\Utility.cs",
+              "RelativeDocumentMoniker": "Utility.cs",
+              "ToolTip": "D:\\Gabi\\Proiecte\\Cod QR\\Cod QR\\Utility.cs",
+              "RelativeToolTip": "Utility.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-04T21:29:42.553Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Testing.cs",
+              "DocumentMoniker": "D:\\Gabi\\Proiecte\\Cod QR\\Cod QR\\Testing.cs",
+              "RelativeDocumentMoniker": "Testing.cs",
+              "ToolTip": "D:\\Gabi\\Proiecte\\Cod QR\\Cod QR\\Testing.cs",
+              "RelativeToolTip": "Testing.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-04T21:29:41.747Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Cod QR.csproj",
+              "DocumentMoniker": "D:\\Gabi\\Proiecte\\Cod QR\\Cod QR\\Cod QR.csproj",
+              "RelativeDocumentMoniker": "Cod QR.csproj",
+              "ToolTip": "D:\\Gabi\\Proiecte\\Cod QR\\Cod QR\\Cod QR.csproj",
+              "RelativeToolTip": "Cod QR.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-02-04T21:29:35.876Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "GaloisField.cs",
+              "DocumentMoniker": "D:\\Gabi\\Proiecte\\Cod QR\\Cod QR\\GaloisField.cs",
+              "RelativeDocumentMoniker": "GaloisField.cs",
+              "ToolTip": "D:\\Gabi\\Proiecte\\Cod QR\\Cod QR\\GaloisField.cs",
+              "RelativeToolTip": "GaloisField.cs",
+              "ViewState": "AgIAAIQAAAAAAAAAAAAawJoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-04T21:26:06.25Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "QRCodeImageParser.cs",
+              "DocumentMoniker": "D:\\Gabi\\Proiecte\\Cod QR\\Cod QR\\QRCodeImageParser.cs",
+              "RelativeDocumentMoniker": "QRCodeImageParser.cs",
+              "ToolTip": "D:\\Gabi\\Proiecte\\Cod QR\\Cod QR\\QRCodeImageParser.cs",
+              "RelativeToolTip": "QRCodeImageParser.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-04T21:09:29.355Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "QRCode.cs",
+              "DocumentMoniker": "D:\\Gabi\\Proiecte\\Cod QR\\Cod QR\\QRCode.cs",
+              "RelativeDocumentMoniker": "QRCode.cs",
+              "ToolTip": "D:\\Gabi\\Proiecte\\Cod QR\\Cod QR\\QRCode.cs",
+              "RelativeToolTip": "QRCode.cs",
+              "ViewState": "AgIAAGIAAAAAAAAAAAAawHkAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-04T20:42:51.056Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\Gabi\\Proiecte\\Cod QR\\Cod QR\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "D:\\Gabi\\Proiecte\\Cod QR\\Cod QR\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACMAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-04T20:41:13.859Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
