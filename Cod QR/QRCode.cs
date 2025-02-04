@@ -268,23 +268,23 @@ public partial class QRCode {
         int ECCLevel = errorCorrectionLevel;
         int maskBits = GetMaskBits(ECCLevel, mask);
         // THIS CODE IS FOR DEBUGGING PROPURSES IF YOU WANT TO SEE ANOTHER MASK
-        for(int j = 0; j <= 5; j++) {
-            code[8][j] = (maskBits >> (14 - j)) & 1;
-        }
-        for(int j = 6; j <= 7; j++) {
-            code[8][j + 1] = (maskBits >> (14 - j)) & 1;
-        }
-        code[7][8] = (maskBits >> (14 - 8)) & 1;
-        for(int i = 0; i <= 5; i++) {
-            code[i][8] = (maskBits >> (i)) & 1;
-        }
-        for(int i = 0; i <= 6; i++) {
-            code[code.Length - i - 1][8] = (maskBits >> (14 - i)) & 1;
+        //for(int j = 0; j <= 5; j++) {
+        //    code[8][j] = (maskBits >> (14 - j)) & 1;
+        //}
+        //for(int j = 6; j <= 7; j++) {
+        //    code[8][j + 1] = (maskBits >> (14 - j)) & 1;
+        //}
+        //code[7][8] = (maskBits >> (14 - 8)) & 1;
+        //for(int i = 0; i <= 5; i++) {
+        //    code[i][8] = (maskBits >> (i)) & 1;
+        //}
+        //for(int i = 0; i <= 6; i++) {
+        //    code[code.Length - i - 1][8] = (maskBits >> (14 - i)) & 1;
 
-        }
-        for(int j = 0; j <= 7; j++) {
-            code[8][code.Length - 1 - j] = (maskBits >> j) & 1;
-        }
+        //}
+        //for(int j = 0; j <= 7; j++) {
+        //    code[8][code.Length - 1 - j] = (maskBits >> j) & 1;
+        //}
         maskUsed = mask;
     }
 }

@@ -135,10 +135,12 @@ public static class QRCodeImageParser {
                 var x = bounds.left + (int)Math.Round(xPixelSize * j + xPixelSize / 2, MidpointRounding.AwayFromZero);
                 var y = bounds.top + (int)Math.Round(yPixelSize * i + yPixelSize / 2, MidpointRounding.AwayFromZero);
 
+
                 var pixel = img[x, y];
                 rawQR[i][j] = IsDark(pixel) ? 1 : 0;
             }
         }
+        Console.ForegroundColor = ConsoleColor.Gray;
 
         return rawQR;
     }
