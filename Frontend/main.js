@@ -3,17 +3,14 @@ function main() {
     document.getElementById("get").onclick = handleGet;
     document.getElementById("post").onclick = handlePost;
 
-    container = document.getElementById("forecastContainer");
-    forecastTemplate = document.getElementById("forecastTemplate");
-    infoElem = document.getElementById("info");
-    document.getElementById("fileToSend").addEventListener("change", function(event) {
+    document.getElementById("scannerFile").addEventListener("change", function(event) {
         const file = event.target.files[0];
 
         if(!file) return;
 
         const reader = new FileReader();
         reader.onload = function(e) {
-            const img = document.getElementById("myPreview");
+            const img = document.getElementById("scannerPreview");
             img.src = e.target.result;
             img.style.display = "block";
             img.style.width = "300px";
@@ -47,7 +44,7 @@ async function handlePost() {
     var title = document.getElementById("messageTitle").value;
     var content = document.getElementById("messageBody").value;
 
-    var file = document.getElementById("fileToSend").files[0];
+    var file = document.getElementById("scannerFile").files[0];
 
     if(!file) return;
 
@@ -67,7 +64,7 @@ async function handlePost() {
     await console.log(response);
     const result = await response.json();
 
-    document.getElementById("result").innerText = result.message;
+    document.getElementById("scanResult").innerText = result.message;
 
     await console.log(result);
 
