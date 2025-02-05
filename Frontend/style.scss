@@ -1,0 +1,44 @@
+.button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 30px;
+    border: 2px solid grey;
+    border-radius: 1000px;
+}
+
+#forecastContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.forecast {
+    width: 100px;
+    border-radius: 3px;
+    border: 2px solid black;
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+    justify-content: space-around;
+    align-items: center;
+
+    gap: 10px;
+    p {
+        padding: 0;
+        margin: 0;
+    }
+    .temperatureC::after {
+        content: "℃";
+        display: inline-block;
+    }
+    .temperatureF::after {
+        content: "℉";
+        display: inline-block;
+    }
+}
+
+#fileToSend {
+    margin: 10px 0px;
+}

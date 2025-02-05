@@ -1,8 +1,6 @@
 ﻿namespace QREncoder {
     public class NumericEncoder : IEncoder {
         public byte[] Encode(string input) {
-            input = input.Trim();
-
             var encoded = new List<byte>();
 
             int i = 0;
