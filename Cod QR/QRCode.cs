@@ -123,7 +123,7 @@ public partial class QRCode {
         return ans;
     }
     public bool IsData(int x, int y) {
-        int maxWidth = SizeForVersion(version);
+        int maxWidth = Utility.SizeForVersion(version);
         int[] alligmentPoints = GetAlignmentPoints();
 
         if(x < 9 && y < 9) return false;
@@ -142,7 +142,6 @@ public partial class QRCode {
         return true;
     }
 
-    int SizeForVersion(int version) => version * 4 + 17;
 
     int[] GetAlignmentCoords() {
         if(version <= 1) {
@@ -265,117 +264,10 @@ public partial class QRCode {
                 code[i][j] ^= 1;
             }
         }
-        int ECCLevel = errorCorrectionLevel;
-        int maskBits = GetMaskBits(ECCLevel, mask);
-        // THIS CODE IS FOR DEBUGGING PROPURSES IF YOU WANT TO SEE ANOTHER MASK
-        //for(int j = 0; j <= 5; j++) {
-        //    code[8][j] = (maskBits >> (14 - j)) & 1;
-        //}
-        //for(int j = 6; j <= 7; j++) {
-        //    code[8][j + 1] = (maskBits >> (14 - j)) & 1;
-        //}
-        //code[7][8] = (maskBits >> (14 - 8)) & 1;
-        //for(int i = 0; i <= 5; i++) {
-        //    code[i][8] = (maskBits >> (i)) & 1;
-        //}
-        //for(int i = 0; i <= 6; i++) {
-        //    code[code.Length - i - 1][8] = (maskBits >> (14 - i)) & 1;
-
-        //}
-        //for(int j = 0; j <= 7; j++) {
-        //    code[8][code.Length - 1 - j] = (maskBits >> j) & 1;
-        //}
-        maskUsed = mask;
     }
 }
 
 // TO PUT IN GENERATOR:
 /*
-int CalculatePenaltyScore() {
-        int consecutives = 0;
-        int score = 0;
 
-        // Calculate hroziontal consecutives penalties
-        for(int i = 0; i < code.Length; i++) {
-            if(consecutives == 5) score += 3;
-            else if(consecutives > 5) score++;
-            consecutives = 1;
-            for(int j = 1; j < code.Length; j++) {
-                if(code[i][j] == code[i][j - 1]) consecutives++;
-                else {
-                    if(consecutives == 5) score += 3;
-                    else if(consecutives > 5) score += 3 + consecutives - 5;
-                    consecutives = 1;
-                }
-            }
-        }
-        // Calculate vertical consecutives penalties
-        for(int i = 0; i < code.Length; i++) {
-            if(consecutives == 5) score += 3;
-            else if(consecutives > 5) score++;
-            consecutives = 1;
-            for(int j = 1; j < code.Length; j++) {
-                if(code[j][i] == code[j - 1][i]) consecutives++;
-                else {
-                    if(consecutives == 5) score += 3;
-                    else if(consecutives > 5) score += 3 + consecutives - 5;
-                    consecutives = 1;
-                }
-            }
-        }
-
-        // Calculate 2x2 penalties
-        for(int i = 1; i < code.Length; i++) {
-            for(int j = 1; j < code.Length; j++) {
-                if(code[i][j] == code[i][j - 1] && code[i][j - 1] == code[i - 1][j - 1] && code[i - 1][j - 1] == code[i - 1][j])
-                    score += 3;
-            }
-        }
-
-        // Horizontal finder-like penalties
-        for(int i = 0; i < code.Length; i++) {
-            int nr = 0, mod = 1 << 11;
-
-            for(int j = 0; j < 11; j++)
-                nr = nr * 2 + code[i][j];
-            if(nr == 1488 || nr == 93)
-                score += 40;
-            for(int j = 11; j < code.Length; j++) {
-                nr = nr % mod * 2 + code[i][j];
-                if(nr == 1488 || nr == 93)
-                    score += 40;
-            }
-        }
-        // Vertical finder-like penalties
-        for(int i = 0; i < code.Length; i++) {
-            int nr = 0, mod = 1 << 11;
-            for(int j = 0; j < 11; j++)
-                nr = nr * 2 + code[j][i];
-            if(nr == 1488 || nr == 93)
-                score += 40;
-            for(int j = 11; j < code.Length; j++) {
-                nr = nr % mod * 2 + code[j][i];
-                if(nr == 1488 || nr == 93)
-                    score += 40;
-            }
-        }
-
-        // Dark/light balance penalties
-        int darkModules = 0;
-        for(int i = 0; i < code.Length; i++)
-            for(int j = 0; j < code.Length; j++)
-                darkModules += code[i][j];
-        int totalModules = code.Length * code.Length;
-        int m = totalModules / (darkModules);
-        int intervalStart = m / 5 * 5;
-        int intervalEnd = (m / 5 + 1) * 5;
-        intervalStart -= 50; intervalEnd -= 50;
-        intervalStart = Math.Abs(intervalStart);
-        intervalEnd = Math.Abs(intervalEnd);
-        intervalStart /= 5; intervalEnd /= 5;
-
-        score += Math.Min(intervalStart, intervalEnd) * 10;
-
-        return score;
-    }
 */

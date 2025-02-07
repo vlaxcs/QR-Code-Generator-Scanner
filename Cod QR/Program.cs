@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Xml.Linq;
 using System.Xml.Schema;
@@ -160,31 +161,7 @@ byte[] eccList = qr.Encode(eccArray.ToArray());
 for (int i = 0; i < (total) / 8; i++)
     Console.WriteLine($"{eccList[i]:X}");
 
-
- bool IsData(int x, int y)
-            {
-                int maxWidth = SizeForVersion(version);
-                int[] alligmentPoints = GetAlignmentPoints();
-
-                if (x < 9 && y < 9) return false;
-
-                if (x < 9 && y > maxWidth - 9) return false;
-                if (x > maxWidth - 9 && y < 9) return false;
-
-                if (version >= 7 && x < 7 && y > maxWidth - 12) return false;
-                if (version >= 7 && y < 7 && x > maxWidth - 12) return false;
-
-                if (x == 6 || y == 6) return false;
-                for (int i = 0; i < alligmentPoints.Length; i += 2)
-                {
-                    if (Math.Abs(alligmentPoints[i] - x) < 3 && Math.Abs(alligmentPoints[i + 1] - y) < 3)
-                        return false;
-                }
-                return true;
-            }
-
-int SizeForVersion(int version) => version * 4 + 17;
-
+new QRCodeGenerator(eccList, version, 1);
 int[] GetAlignmentCoords()
 {
     if (version <= 1)
@@ -258,8 +235,27 @@ int[] GetAlignmentPoints()
 }
 
 
+bool IsData(int x, int y)
+{
+    int maxWidth = Utility.SizeForVersion(version);
+    int[] alligmentPoints = GetAlignmentPoints();
+
+    if (x < 9 && y < 9) return false;
+
+    if (x < 9 && y > maxWidth - 9) return false;
+    if (x > maxWidth - 9 && y < 9) return false;
+
+    if (version >= 7 && x < 7 && y > maxWidth - 12) return false;
+    if (version >= 7 && y < 7 && x > maxWidth - 12) return false;
+
+    if (x == 6 || y == 6) return false;
+    for (int i = 0; i < alligmentPoints.Length; i += 2)
+    {
+        if (Math.Abs(alligmentPoints[i] - x) < 3 && Math.Abs(alligmentPoints[i + 1] - y) < 3)
+            return false;
+    }
+    return true;
+}
 
 
-
-
-
+int[][] code;

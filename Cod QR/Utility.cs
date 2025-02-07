@@ -1,4 +1,7 @@
 ﻿public static class Utility {
+
+    public static int SizeForVersion(int version) => version * 4 + 17;
+
     public static int MostSignificantBit(this int x) {
         int cx = x;
         while(x != 0) {
