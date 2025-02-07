@@ -257,5 +257,6 @@ bool IsData(int x, int y)
     return true;
 }
 
+code.Print();
 
-int[][] code;
+var res = QRCodeDecoder.DecodeQR(code);
