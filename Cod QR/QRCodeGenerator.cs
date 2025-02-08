@@ -122,19 +122,18 @@
             encodedMessage = MessageEncoder.EncodeMessage(type.Value, message);
         }
 
-        version = DetermineFittingVersion(encodedMessage, minVersion);
-
+        version = DetermineFittingVersion(encodedMessage, minVersion) - 1;
         List<byte> res = new List<byte>();
 
         AppendBits(res, (int)type.Value, 4);
-        AppendBits(res, encodedMessage.bitsArray.Length, 10 - (int)Math.Log2((int)type * 2 + 1) + 1);
+        AppendBits(res, encodedMessage.bitsArray.Length / 8, 10 - (int)Math.Log2((int)type * 2 + 1) + 1);
         for(int i = 0; i < encodedMessage.bitsArray.Length; i++) {
             res.Add(encodedMessage[i]);
         }
 
         var numberOfBlocks = nrOfDataBlocks[version][ECCLevel];
         var numberOfBits = numberOfBlocks * 8;
-        while(res.Count <= numberOfBits) {
+        while(res.Count < numberOfBits) {
             res.Add(0);
             if(res.Count % 8 == 0) break;
         }
@@ -149,7 +148,6 @@
 
         res.RemoveRange(res.Count / 8, res.Count - res.Count / 8);
 
-
         while(res.Count < numberOfBlocks) {
             res.Add(0xEC);
             if(res.Count >= numberOfBlocks) break;
@@ -158,7 +156,8 @@
 
         var galoisField = new GaloisField(nrOfECBlocks[version][ECCLevel]);
         var finalRes = galoisField.Encode(res.ToArray());
-
+        
+        version += 1;
         return Generate(finalRes.ToArray(), version, errorCorrectionLevel);
     }
 
@@ -303,7 +302,7 @@
             code[8][code.Length - 1 - j] = (maskBits >> j) & 1;
         }
     }
-    
+
     static void SetAllDataBlocks(byte[] TotalData) {
         int nr = 0;
         for(int j = code.Length - 1; j >= 1; j -= 2) {
@@ -543,6 +542,3 @@
         return score;
     }
 }
-
-
-

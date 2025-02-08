@@ -13,5 +13,10 @@
         public override string ToString() {
             return originalMessage;
         }
+
+        public byte this[int i] {
+            get => bitsArray[i];
+            set => bitsArray[i] = value;
+        }
     }
 }

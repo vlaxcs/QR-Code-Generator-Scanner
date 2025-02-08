@@ -1,4 +1,7 @@
-﻿using System.Text;
+﻿using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using System.Diagnostics;
+using System.Text;
 
 public partial class QRCode {
     readonly int[][] code;
@@ -149,6 +152,45 @@ public partial class QRCode {
         return true;
     }
 
+    public void SaveToFile(string filePath, int pixelSize) {
+        Console.WriteLine($"Saving QR to image file with a pixel size of {pixelSize} at {filePath}...");
+
+        var size = (code.Length + 2) * pixelSize;
+
+        var blackCol = new Rgba32(0, 0, 0);
+        var whiteCol = new Rgba32(255, 255, 255);
+
+        var img = new Image<Rgba32>(size, size, whiteCol);
+
+        for(int i = 0; i < code.Length; i++) {
+            for(int j = 0; j < code.Length; j++) {
+                var val = code[i][j];
+                if(IsData(i, j) &&  masks[maskUsed](i, j)) val ^= 1;
+
+                if(val == 0) continue;
+
+                for(int si = 0; si < pixelSize; si++) {
+                    for(int sj = 0; sj < pixelSize; sj++) {
+                        int x = (j + 1) * pixelSize + sj;
+                        int y = (i + 1) * pixelSize + si;
+                        img[x, y] = blackCol;
+                    }
+                }
+            }
+        }
+
+        img.Save(filePath);
+
+        Console.WriteLine($"Image has been saved at {filePath}");
+
+        var process = new Process();
+        process.StartInfo = new ProcessStartInfo() {
+            UseShellExecute = true,
+            FileName = filePath
+        };
+
+        process.Start();
+    }
 
     int[] GetAlignmentCoords() {
         if(Version <= 1) {
