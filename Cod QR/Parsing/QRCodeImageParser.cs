@@ -21,14 +21,14 @@ public static class QRCodeImageParser {
 
 
 
-     static bool IsDark(Rgba32 pixel) {
+    static bool IsDark(Rgba32 pixel) {
         return (pixel.R + pixel.G + pixel.B) / 3 < BRIGHTNESS_THRESHOLD;
     }
-    
 
 
 
-     static Bounds DetermineBounds(Image<Rgba32> img) {
+
+    static Bounds DetermineBounds(Image<Rgba32> img) {
         Bounds bounds = new Bounds();
 
         // Top bound
@@ -93,7 +93,7 @@ public static class QRCodeImageParser {
 
         return bounds;
     }
-     static int DeterminePixelSize(Image<Rgba32> img, Bounds bounds) {
+    static int DeterminePixelSize(Image<Rgba32> img, Bounds bounds) {
         int pixelSize = 0, aux = 0;
         for(int i = 0; i < img.Width; i++) {
             if(!IsDark(img[bounds.left + i, bounds.top + i])) {
@@ -114,7 +114,7 @@ public static class QRCodeImageParser {
 
         return pixelSize;
     }
-     static int[][] ExtractJaggedArray(Image<Rgba32> img, Bounds bounds, int pixelSize) {
+    static int[][] ExtractJaggedArray(Image<Rgba32> img, Bounds bounds, int pixelSize) {
         int size = (bounds.right - bounds.left) / pixelSize;
 
         int v = (int)Math.Round((float)(size - 17) / 4, MidpointRounding.ToZero);
@@ -146,13 +146,13 @@ public static class QRCodeImageParser {
     }
 
 
-     static readonly Func<int, int, int, (int, int)>[] OrientationLUT = {
+    static readonly Func<int, int, int, (int, int)>[] OrientationLUT = {
             (i, j, n) => (i, j), // Empty corner Bottom Right
             (i, j, n) => (j, n - i - 1), // Empty corner Bottom Left
             (i, j, n) => (n - i - 1, n - j - 1), // Empty corner Top Left
             (i, j, n) => (n - j - 1, i), // Empty corner Top Right
         };
-     static int[][] CheckOrientation(int[][] rawQR) {
+    static int[][] CheckOrientation(int[][] rawQR) {
         int n = rawQR.Length;
         bool bottomSymmetric = true, rightSymmetric = true;
         // Check if bottom two alignment patterns match
