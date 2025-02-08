@@ -1,5 +1,5 @@
-﻿List<string> items = new List<string> {"Clatite", "QR1", "QR2", "QR3", "QR4", "QR5", "QR6", "QR7", "QRdalv", "QR8", "QR9" };
-//List<string> items = new List<string> { "QR10", "QR11", "QR12", "QR13" };
+﻿//List<string> items = new List<string> {"Clatite", "QR1", "QR2", "QR3", "QR4", "QR5", "QR6", "QR7", "QRdalv", "QR8", "QR9" };
+List<string> items = new List<string> { "QR10", "QR11", "QR12", "QR13" };
 
 for (int i = 0; i < items.Count; ++i)
 {
