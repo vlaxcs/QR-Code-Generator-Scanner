@@ -2,11 +2,11 @@
 
 public partial class QRCode {
     readonly int[][] code;
-    public readonly int version, errorCorrectionLevel;
+    public int Version { get; private set; }
+    public int ErrorCorrectionLevel { get; private set; }
 
-    //For Debuging Propurses
-    public int maskUsed;
-    public readonly byte[] data; 
+    int maskUsed;
+    public byte[] data;
 
     // Data masking
     static Func<int, int, bool>[] masks = {
@@ -25,15 +25,21 @@ public partial class QRCode {
 
     public QRCode(int[][] mat) {
         code = mat;
+
+        Version = (code.Length - 17) / 4;
+        if(Version < 1 || Version > 40) {
+            throw new Exception("Version is invalid");
+        }
+
         if((code.Length - 17) % 4 != 0) {
             throw new Exception("Size is invalid");
         }
 
-        version = (code.Length - 17) / 4;
-        if(version < 1 || version > 40) {
-            throw new Exception("Version is invalid");
-        }
+        Initialize();
+    }
 
+
+    void Initialize() {
         int mask1 = 0;
         int mask2 = 0;
         for(int j = 0; j <= 5; j++) {
@@ -57,11 +63,12 @@ public partial class QRCode {
         mask2 = GetClosestDataEC(mask2);
         if(mask1 != mask2) throw new Exception("Mask bits dont match");
         maskUsed = (mask1 >> 10) & 7 ^ 5;
-        errorCorrectionLevel = (mask1 >> 13) ^ 2;
+        ErrorCorrectionLevel = (mask1 >> 13) ^ 2;
 
         ApplyMask(maskUsed);
         data = GetAllDataBlocks();
     }
+
 
     public void Print(bool masked = true) {
         if(masked) ApplyMask(maskUsed);
@@ -123,7 +130,7 @@ public partial class QRCode {
         return ans;
     }
     public bool IsData(int x, int y) {
-        int maxWidth = Utility.SizeForVersion(version);
+        int maxWidth = Utility.SizeForVersion(Version);
         int[] alligmentPoints = GetAlignmentPoints();
 
         if(x < 9 && y < 9) return false;
@@ -131,8 +138,8 @@ public partial class QRCode {
         if(x < 9 && y > maxWidth - 9) return false;
         if(x > maxWidth - 9 && y < 9) return false;
 
-        if(version >= 7 && x < 7 && y > maxWidth - 12) return false;
-        if(version >= 7 && y < 7 && x > maxWidth - 12) return false;
+        if(Version >= 7 && x < 7 && y > maxWidth - 12) return false;
+        if(Version >= 7 && y < 7 && x > maxWidth - 12) return false;
 
         if(x == 6 || y == 6) return false;
         for(int i = 0; i < alligmentPoints.Length; i += 2) {
@@ -144,29 +151,29 @@ public partial class QRCode {
 
 
     int[] GetAlignmentCoords() {
-        if(version <= 1) {
+        if(Version <= 1) {
             return new int[0];
         }
-        int num = (version / 7) + 2;
+        int num = (Version / 7) + 2;
         int[] result = new int[num];
         result[0] = 6;
         if(num == 1) {
             for(int i = 0; i < num; i++) {
-                result[i] = version * 4 + 16 - result[i];
+                result[i] = Version * 4 + 16 - result[i];
             }
             return result;
         }
-        result[num - 1] = 4 * version + 10;
+        result[num - 1] = 4 * Version + 10;
         if(num == 2) {
             for(int i = 0; i < num; i++) {
-                result[i] = version * 4 + 16 - result[i];
+                result[i] = Version * 4 + 16 - result[i];
             }
             return result;
         }
         result[num - 2] = 2 * ((result[0] + result[num - 1] * (num - 2)) / ((num - 1) * 2));
         if(num == 3) {
             for(int i = 0; i < num; i++) {
-                result[i] = version * 4 + 16 - result[i];
+                result[i] = Version * 4 + 16 - result[i];
             }
             return result;
         }
@@ -175,7 +182,7 @@ public partial class QRCode {
             result[i] = result[i + 1] - step;
         }
         for(int i = 0; i < num; i++) {
-            result[i] = version * 4 + 16 - result[i];
+            result[i] = Version * 4 + 16 - result[i];
         }
         return result;
     }

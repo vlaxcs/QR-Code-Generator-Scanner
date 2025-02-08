@@ -9,5 +9,9 @@
             this.bitsArray = bitsArray;
             this.originalMessage = originalMessage;
         }
+
+        public override string ToString() {
+            return originalMessage;
+        }
     }
 }

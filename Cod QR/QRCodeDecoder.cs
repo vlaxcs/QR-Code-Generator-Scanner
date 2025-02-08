@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Xml.Xsl;
 
 public static partial class QRCodeDecoder {
-    static readonly int[][] blocksByECL = {
+    static readonly int[][] nrOfECBlocks = {
         new int[]{7, 10, 13, 17},
         new int[]{10, 16, 22, 28},
         new int[]{15, 26, 36, 44},
@@ -49,7 +49,7 @@ public static partial class QRCodeDecoder {
 
     public static QRMessage DecodeQR(QRCode code) {
         // Apply error correction
-        int nsym = blocksByECL[code.version - 1][code.errorCorrectionLevel];
+        int nsym = nrOfECBlocks[code.Version - 1][code.ErrorCorrectionLevel];
 
         /*for(int bi = 1; bi < 2000; bi++) {
             try {
@@ -110,7 +110,7 @@ public static partial class QRCodeDecoder {
             }
         }
 
-        int encodingRange = Utility.ComputeEncodingRange(code.datatype, code.version);
+        int encodingRange = Utility.ComputeEncodingRange(code.datatype, code.Version);
 
         int messageLen = 0;
         for(int i = 4; i < 4 + encodingRange; i++)
