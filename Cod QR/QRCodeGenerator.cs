@@ -129,7 +129,7 @@
         AppendBits(res, (int)type.Value, 4);
         AppendBits(res, encodedMessage.bitsArray.Length, 10 - (int)Math.Log2((int)type * 2 + 1) + 1);
         for(int i = 0; i < encodedMessage.bitsArray.Length; i++) {
-            res.Add(encodedMessage.bitsArray[i]);
+            res.Add(encodedMessage[i]);
         }
 
         var numberOfBlocks = nrOfDataBlocks[version][ECCLevel];
@@ -139,41 +139,27 @@
             if(res.Count % 8 == 0) break;
         }
 
-        while(res.Count < numberOfBits) {
-            AppendBits(res, 0xEC, 8);
-            if(res.Count >= numberOfBits) break;
-            AppendBits(res, 0x11, 8);
-        }
-
-        List<byte> ECCBlocks = new List<byte>();
-        int nr = 0, nr1 = 0, ap = 0;
-        for(int i = 0; i < res.Count; i++) {
-            nr = (res[i] << 3) + (res[i + 1] << 2) + (res[i + 2] << 1) + res[i + 3];
-            
-            i += 3;
-            
-            nr1 = nr1 * 16 + nr;
-            ap++;
-            if(ap == 2) {
-                ECCBlocks.Add((byte)nr1);
-                nr1 = 0;
-                ap = 0;
+        // Transform bits to bytes
+        for(int i = 0; i < res.Count / 8; i++) {
+            for(int b = 0; b < 8; b++) {
+                res[i] <<= 1;
+                res[i] |= res[i * 8 + b];
             }
         }
-        if(nr1 != 0) {
-            nr1 = nr1 * 16;
-            ECCBlocks.Add((byte)nr1);
-            nr1 = 0;
+
+        res.RemoveRange(res.Count / 8, res.Count - res.Count / 8);
+
+
+        while(res.Count < numberOfBlocks) {
+            res.Add(0xEC);
+            if(res.Count >= numberOfBlocks) break;
+            res.Add(0x11);
         }
 
         var galoisField = new GaloisField(nrOfECBlocks[version][ECCLevel]);
-        var ECC = galoisField.Encode(ECCBlocks.ToArray());
+        var finalRes = galoisField.Encode(res.ToArray());
 
-        for(int i = 0; i < ECC.Length; i++) {
-            res.Add(ECC[i]);
-        }
-
-        return Generate(res.ToArray(), version, errorCorrectionLevel);
+        return Generate(finalRes.ToArray(), version, errorCorrectionLevel);
     }
 
     static QRCode Generate(byte[] dataBlocks, int qrVersion, int errorCorrectionLevel) {
@@ -191,13 +177,7 @@
         PutAligmentPoints();
         ApplyVersionBits();
         SetAllDataBlocks(dataBlocks);
-
-        for(int i = 0; i < code.Length; i++) {
-            for(int j = 0; j < code[i].Length; j++) {
-                Console.Write(code[i][j]);
-            }
-            Console.WriteLine();
-        }
+        PlaceBestMask();
 
         return new QRCode(code);
     }

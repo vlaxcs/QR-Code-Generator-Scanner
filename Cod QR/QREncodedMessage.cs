@@ -8,4 +8,9 @@
         this.bitsArray = bitsArray;
         this.originalMessage = originalMessage;
     }
+
+    public byte this[int index] {
+        get => bitsArray[index];
+        set => bitsArray[index] = value;
+    }
 }
