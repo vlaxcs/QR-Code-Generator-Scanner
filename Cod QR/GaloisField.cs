@@ -1,9 +1,8 @@
 using System.Text;
 
-/* Absolutely useful resources:
-https://blog.qartis.com/decoding-small-qr-codes-by-hand/
-https://people.inf.ethz.ch/gander/papers/qrneu.pdf
-*/
+/* Internet never disappoints:
+    https://blog.qartis.com/decoding-small-qr-codes-by-hand/
+    https://people.inf.ethz.ch/gander/papers/qrneu.pdf */
 
 public class GaloisField {
     public int[] exp = new int[512];

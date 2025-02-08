@@ -39,3 +39,27 @@ Numeric
 Quartile
 V3
 31415926535897932384626433832795028841971693993
+
+QR10
+Byte
+Low
+V2
+ala bala portocala
+
+QR11
+Byte
+Medium
+V2
+ala bala portocala
+
+QR12
+Byte
+Quartile
+V2
+ala bala portocala
+
+QR13
+Byte
+High
+V3
+ala bala portocala

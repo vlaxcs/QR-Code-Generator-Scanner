@@ -39,7 +39,7 @@ public partial class QRCode {
 
         mask1 = GetClosestDataEC(mask1);
         mask2 = GetClosestDataEC(mask2);
-        if (mask1 != mask2) throw new Exception("Mask bits dont match!");
+        if (mask1 != mask2) throw new Exception("Mask bits don't match!");
         maskUsed = ((mask1 >> 10) & 7) ^ 5;
         errorCorrectionLevel = (mask1 >> 13) ^ 3;
         ApplyMask(maskUsed);
@@ -220,7 +220,7 @@ public partial class QRCode {
             }
         }
         int ECCLevel = errorCorrectionLevel;
-        int maskBits = GetMaskBits(ECCLevel, mask);
+        int maskBits = GetMaskBits(ECCLevel ^ 1, mask);
 
         // THIS CODE IS FOR DEBUGGING PROPURSES IF YOU WANT TO SEE ANOTHER MASK
         for(int j = 0; j <= 5; j++) code[8][j] = (maskBits >> (14 - j)) & 1;
