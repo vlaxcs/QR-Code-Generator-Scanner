@@ -1,4 +1,2 @@
-﻿
-
-var qr = QRCodeGenerator.Generate("Hello there");
+﻿var qr = QRCodeGenerator.Generate("Hello there");
 qr.Print();

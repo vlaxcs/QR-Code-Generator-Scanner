@@ -191,7 +191,6 @@
         PutAligmentPoints();
         ApplyVersionBits();
         SetAllDataBlocks(dataBlocks);
-        PlaceBestMask();
 
         for(int i = 0; i < code.Length; i++) {
             for(int j = 0; j < code[i].Length; j++) {
@@ -206,8 +205,8 @@
 
     static int DetermineFittingVersion(QREncodedMessage message, int minimum) {
         var minBlocks = Math.Ceiling(message.bitsArray.Length * 1.0 / 8);
-        for(int i = minimum - 1; i <= 39; i++) {
-            if(nrOfDataBlocks[i][ECCLevel] >= minBlocks) {
+        for(int i = minimum; i <= 40; i++) {
+            if(nrOfDataBlocks[i - 1][ECCLevel] >= minBlocks) {
                 version = i;
                 return version;
             }
