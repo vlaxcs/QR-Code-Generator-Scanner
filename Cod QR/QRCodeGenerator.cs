@@ -155,7 +155,8 @@
         }
 
         var galoisField = new GaloisField(nrOfECBlocks[version][ECCLevel]);
-        var finalRes = galoisField.Encode(res.ToArray());
+        var finalRes = galoisField.Encode(res.ToArray()).ToList();
+        finalRes.Add(0);
         
         version += 1;
         return Generate(finalRes.ToArray(), version, errorCorrectionLevel);
@@ -175,8 +176,12 @@
         PutBlocks();
         PutAligmentPoints();
         ApplyVersionBits();
+        Console.WriteLine("Setting data blocks...");
         SetAllDataBlocks(dataBlocks);
+        Console.WriteLine("Data blocks set");
+        Console.WriteLine("Placing best mask...");
         PlaceBestMask();
+        Console.WriteLine("Placed best mask");
 
         return new QRCode(code);
     }
@@ -246,7 +251,7 @@
             var allx = aligmentPoints[k];
             var ally = aligmentPoints[k + 1];
             for(int i = -2; i <= 2; i++) {
-                for(int j = -2; j < 2; j++) {
+                for(int j = -2; j <= 2; j++) {
                     code[allx + i][ally + j] = 1;
                 }
             }
