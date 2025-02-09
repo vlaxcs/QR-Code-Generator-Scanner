@@ -335,7 +335,6 @@
                     }
                 }
             }
-            Console.WriteLine(nr);
         }
     }
     static bool IsData(int x, int y) {
