@@ -50,4 +50,37 @@
         field.GeneratePolynomials();
         for(int i = 0; i < blockCount; i++) current[i] = field.exp[i];
     }
+
+    
+    
+    
+    // For console outputs
+    public static void WriteValid(string output) {
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine(output);
+    }
+    public static void WriteValid(string output, int[] array) {
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.Write(output);
+        if(array != null) {
+            for(int j = 0; j < array.Length; j++)
+                Console.Write(Convert.ToChar(array[j]));
+        }
+        Console.WriteLine();
+    }
+
+    public static void WriteInvalid(string output) {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine(output);
+    }
+
+    public static void WriteNeutral(string output) {
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.WriteLine(output);
+    }
+
+    public static void ResetConsole() {
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine();
+    }
 }

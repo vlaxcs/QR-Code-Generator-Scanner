@@ -1,6 +1,4 @@
 ﻿using System.Text;
-using System;
-using System.ComponentModel.DataAnnotations;
 
 public static class QRCodeDecoder {
     static readonly int[][] blocksByECL = {

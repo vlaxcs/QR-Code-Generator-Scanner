@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-public partial class QRCode {
+﻿public partial class QRCode {
     readonly int[][] code;
     public readonly int version, errorCorrectionLevel;
    
