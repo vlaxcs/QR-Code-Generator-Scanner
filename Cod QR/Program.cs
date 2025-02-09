@@ -1,4 +1,9 @@
-﻿for(int i = 39; i >= 1; i--) {
+﻿
+
+
+
+
+for (int i = 39; i >= 1; i--) {
     Console.WriteLine($"Testing V{i}");
     try {
         var qr = QRCodeGenerator.Generate("Minecraft", 1, i);
