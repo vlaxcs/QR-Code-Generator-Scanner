@@ -236,11 +236,11 @@
         if(version < 7) {
             return;
         }
-        version = GetVersionBits(version);
+        int ECCVersion = GetVersionBits(version);
         for(int j = 0; j < 6; j++) {
             for(int i = 0; i < 3; i++) {
-                code[code.Length - 11 + i][j] = version >> (18 - i * 6 + j) & 1;
-                code[j][code.Length - 11 + i] = version >> (18 - i * 6 + j) & 1;
+                code[code.Length - 11 + i][j] = ECCVersion >> (18 - i * 6 + j) & 1;
+                code[j][code.Length - 11 + i] = ECCVersion >> (18 - i * 6 + j) & 1;
 
             }
         }
@@ -335,6 +335,7 @@
                     }
                 }
             }
+            Console.WriteLine(nr);
         }
     }
     static bool IsData(int x, int y) {
