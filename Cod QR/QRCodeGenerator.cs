@@ -236,11 +236,11 @@
         if(version < 7) {
             return;
         }
-        version = GetVersionBits(version);
+        int ECCVersion = GetVersionBits(version);
         for(int j = 0; j < 6; j++) {
             for(int i = 0; i < 3; i++) {
-                code[code.Length - 11 + i][j] = version >> (18 - i * 6 + j) & 1;
-                code[j][code.Length - 11 + i] = version >> (18 - i * 6 + j) & 1;
+                code[code.Length - 11 + i][j] = ECCVersion >> (17 - j * 3 + i) & 1;
+                code[j][code.Length - 11 + i] = ECCVersion >> (17  - j * 3 + i) & 1;
 
             }
         }
@@ -440,12 +440,12 @@
             }
         }
     }
-    static int GetVersionBits(int Version) { //TODO:TEST THIS 
+    static int GetVersionBits(int Version) { //TODO: FIX THIS FUNCTION
         if(version < 7 || version > 40)
             throw new Exception("Version is not good");
         int initnr = Version;
         Version <<= 12;
-        int gen = 0x1F25; // 1111100100101 is the generator=0x1F25
+        int gen = 0x1F25; // 1 1111 0010 0101 is the generator=0x1F25
         int initGen = gen;
         while(Version.MostSignificantBit() >= 4096) {
             while(gen.MostSignificantBit() < Version.MostSignificantBit()) {
