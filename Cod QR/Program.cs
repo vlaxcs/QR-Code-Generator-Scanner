@@ -1,15 +1,15 @@
-﻿//var qr = QRCodeGenerator.Generate("I love fortnite, I love fortnite, I love fortnite, I love fortnite");
-
-//qr.Print();
-
-//qr.SaveToFile(@"C:\Dalv\TEST\hello.png");
-
-
-var qr = QRCodeImageParser.Parse(@"C:\Dalv\TEST\hello.png");
+﻿var qr = QRCodeGenerator.Generate("I love fortnite, I love fortnite, I love fortnite, I love fortnite");
 
 qr.Print();
 
-Console.WriteLine(QRCodeDecoder.DecodeQR(qr));
+qr.SaveToFile(@"C:\Dalv\TEST\hello.png");
+
+
+//var qr = QRCodeImageParser.Parse(@"C:\Dalv\TEST\hello.png");
+
+//qr.Print();
+
+//Console.WriteLine(QRCodeDecoder.DecodeQR(qr));
 
 
 ///*

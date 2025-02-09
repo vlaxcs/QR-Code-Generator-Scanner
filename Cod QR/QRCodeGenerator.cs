@@ -176,12 +176,8 @@
         PutBlocks();
         PutAligmentPoints();
         ApplyVersionBits();
-        Console.WriteLine("Setting data blocks...");
         SetAllDataBlocks(dataBlocks);
-        Console.WriteLine("Data blocks set");
-        Console.WriteLine("Placing best mask...");
         PlaceBestMask();
-        Console.WriteLine("Placed best mask");
 
         return new QRCode(code);
     }
