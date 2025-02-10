@@ -180,6 +180,7 @@ public partial class QRCode {
 
         img.Save(filePath);
 
+        filePath = Path.GetFullPath(filePath);
         Console.WriteLine($"Image has been saved at {filePath}");
 
         var process = new Process();
@@ -188,8 +189,7 @@ public partial class QRCode {
             FileName = filePath
         };
 
-        //TODO: UNCOMMENT THIS!!!!!!!!!!!!
-        //process.Start();
+        process.Start();
     }
 
     int[] GetAlignmentCoords() {
