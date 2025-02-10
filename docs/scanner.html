@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pancakes: QR Code Scanner</title>
+    <link rel="stylesheet" href="./css/scanner.css">
+    <link rel="icon" href="./assets/logo.png">
+    <script src="./js/main.js"></script>
+</head>
+<body>
+    <header>
+        <a href=" "><img src="./assets/logo.png" alt="Pancake's QR Code Scanner & Generator"></a>
+        <a style="font-weight: 500" href="./scanner.html">Scanner</a>
+        <a href="./generator.html">Generator</a>
+        <a href="#notyet">Documentation</a>
+        <a href="https://github.com/vlaxcs/QR-Code-Generator-Scanner" target="_blank"><code>inspect (this) element</code></a>
+    </header>
+
+    <main>
+        <div class="guide">
+            <center><h1>Guide</h1></center>
+            <div class="step">
+                <h2>Step 1</h2>
+                <p>Find a <b style="color: rgb(255, 183, 0)">QR code</b>!</p>
+                <p style="font-size: 1.2vw"><i>If you can't find one, you can use our <a href="./generator.html">generator</a>!</i></p>
+            </div>
+
+            <div class="step">
+                <h2>Step 2</h2>
+                <p>Upload the image containing the QR code using the <i style="color: rgb(54, 189, 81)">Upload a file</i> button.</p>
+            </div>
+
+            <div class="step">
+                <h2>Step 3</h2>
+                <p>Use the <i style="color: rgb(54, 189, 81)">Scan</i> button and watch the results.</p>
+            </div>
+        </div>
+
+        <div class="upload">
+            <div class="UA">
+                <h1>Upload</h1>
+            </div>
+
+            <div class="UB">
+                <img id="preview"> 
+            </div>
+
+            <div id="scannerForm">
+
+                <form id="scannerForm"> 
+                    <label for="scannerFile" class="customFileInput">Upload a file</label>
+                    <input type="file" id="scannerFile" name="scannerFile" accept="image/*" style="display: none">
+                    <div class="scanButton" id="post" type="submit">Scan</div>
+                </form>
+
+            </div>
+            
+        </div>
+
+        <!-- To be updated -->
+        <div class="result">
+            <div class="RA">
+                <h1>Result</h1>
+            </div>
+            
+            <div class="RB">
+                <p class="message">N/A</p>
+            </div>
+
+            <div class="RC">
+                <p class="mask">N/A</p>
+                <p class="version">N/A</p>
+                <p class="ecc-level">N/A</p>
+            </div>
+
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <span>© 2025 Pancake's QR Code Scanner & Generator</span>
+    </footer>
+    
+</body>
+</html>
