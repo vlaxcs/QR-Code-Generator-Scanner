@@ -1,4 +1,4 @@
-﻿/* <><><><>< QR CODE GENERATOR ><><><><><>
+﻿/*<><><><>< QR CODE GENERATOR ><><><><><>
 
  CCCC  L      AAAAA  TTTTT III TTTTT EEEEE
 C      L     A     A   T    I    T   E

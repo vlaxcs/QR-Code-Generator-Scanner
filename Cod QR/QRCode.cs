@@ -121,8 +121,6 @@ public partial class QRCode {
             } else if(nr == dist) nrans++;
         }
 
-        //TODO: IMPLEMENT SOMETHING FOR 2 CODES AT SAME DISTANCE:)
-
         return ans;
     }
     public bool IsData(int x, int y) {
