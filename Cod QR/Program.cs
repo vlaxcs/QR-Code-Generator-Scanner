@@ -1,8 +1,8 @@
-﻿var qr = QRCodeGenerator.Generate("Donec scelerisque quam ut arcu maximus pharetra. Praesent tempor ligula non laoreet.", 2, 9);
+﻿var qr = QRCodeGenerator.Generate("Donec scelerisque quam ut arcu maximus pharetra. Praesent tempor ligula non laoreet.", 2, 30);
 
 qr.Print();
 
-qr.SaveToFile(@"C:\Dalv\TEST\hello.png");
+qr.SaveToFile(@"C:\Users\stefa\Desktop\test.png");
 
 
 //var qr = QRCodeImageParser.Parse(@"C:\Dalv\TEST\hello.png");
