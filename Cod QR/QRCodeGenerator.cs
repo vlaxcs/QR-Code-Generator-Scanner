@@ -137,14 +137,14 @@ public static partial class QRCodeGenerator {
             var ECCBlock = galoisField.Encode(range);
 
             // Loop over just the error correction blocks
-            Console.Write($"G1: ");
-            PrintHexa(range);
-            Console.Write(" | ECC: ");
+            //Console.Write($"G1: ");
+            //PrintHexa(range);
+            //Console.Write(" | ECC: ");
             for(int c = 0; c < grouping.ECCodewordsPerBlock; c++) {
-                Console.Write($"{Convert.ToString(ECCBlock[grouping.codewordsInG1 + c], 16).PadLeft(2, '0').ToUpper()} ");
+                //Console.Write($"{Convert.ToString(ECCBlock[grouping.codewordsInG1 + c], 16).PadLeft(2, '0').ToUpper()} ");
                 ECCBlocks[i * grouping.ECCodewordsPerBlock + c] = ECCBlock[grouping.codewordsInG1 + c];
             }
-            Console.WriteLine();
+            //Console.WriteLine();
         }
 
         // Populate G2 type (long) blocks
@@ -154,14 +154,14 @@ public static partial class QRCodeGenerator {
             var ECCBlock = galoisField.Encode(range);
 
             // Loop over just the error correction blocks
-            Console.Write($"G2: ");
-            PrintHexa(range);
-            Console.Write(" | ECC: ");
+            //Console.Write($"G2: ");
+            //PrintHexa(range);
+            //Console.Write(" | ECC: ");
             for(int c = 0; c < grouping.ECCodewordsPerBlock; c++) {
-                Console.Write($"{Convert.ToString(ECCBlock[grouping.codewordsInG2 + c], 16).PadLeft(2, '0').ToUpper()} ");
+                //Console.Write($"{Convert.ToString(ECCBlock[grouping.codewordsInG2 + c], 16).PadLeft(2, '0').ToUpper()} ");
                 ECCBlocks[(grouping.G1Count + i) * grouping.ECCodewordsPerBlock + c] = ECCBlock[grouping.codewordsInG2 + c];
             }
-            Console.WriteLine();
+            //Console.WriteLine();
         }
 
         var result = new byte[dataBlocks.Length + ECCBlocks.Length];
@@ -191,12 +191,12 @@ public static partial class QRCodeGenerator {
             }
         }
 
-        for(int i = 0; i < result.Length; i++) {
-            if(i < dataBlocks.Length) Console.BackgroundColor = ConsoleColor.DarkGreen;
-            else Console.BackgroundColor = ConsoleColor.DarkMagenta;
-            Console.Write($"{Convert.ToString(result[i], 16).PadLeft(2, '0').ToUpper()} ");
-        }
-        Console.WriteLine();
+        //for(int i = 0; i < result.Length; i++) {
+        //    if(i < dataBlocks.Length) Console.BackgroundColor = ConsoleColor.DarkGreen;
+        //    else Console.BackgroundColor = ConsoleColor.DarkMagenta;
+        //    Console.Write($"{Convert.ToString(result[i], 16).PadLeft(2, '0').ToUpper()} ");
+        //}
+        //Console.WriteLine();
 
         version += 1;
         return Generate(result, version, errorCorrectionLevel);

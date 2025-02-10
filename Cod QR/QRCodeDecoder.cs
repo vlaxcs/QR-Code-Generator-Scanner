@@ -88,13 +88,13 @@ public static partial class QRCodeDecoder {
             groupedData[i] = gf.Decode(groupedData[i]);
         }
 
-        Console.WriteLine($"GROUPED:");
-        for(int i = 0; i < totalGroups; i++) {
-            Console.Write($"G{i}: ");
-            PrintHexa(groupedData[i]);
-            Console.WriteLine();
-        }
-        Console.WriteLine();
+        //Console.WriteLine($"GROUPED:");
+        //for(int i = 0; i < totalGroups; i++) {
+        //    Console.Write($"G{i}: ");
+        //    PrintHexa(groupedData[i]);
+        //    Console.WriteLine();
+        //}
+        //Console.WriteLine();
 
 
         List<byte> dataReconstruction = new List<byte>();
@@ -105,18 +105,17 @@ public static partial class QRCodeDecoder {
         }
         var data = dataReconstruction.ToArray();
 
-        Console.WriteLine($"RECONSTRUCTION:");
-        for(int i = 0; i < data.Length; i++) {
-            Console.Write($"{Convert.ToString(data[i], 16).PadLeft(2, '0').ToUpper()} ");
-        }
-        Console.WriteLine();
+        //Console.WriteLine($"RECONSTRUCTION:");
+        //for(int i = 0; i < data.Length; i++) {
+        //    Console.Write($"{Convert.ToString(data[i], 16).PadLeft(2, '0').ToUpper()} ");
+        //}
+        //Console.WriteLine();
 
 
         List<int> bits = new List<int>();
         for(int i = 0; i < data.Length; i++) {
             for(int j = 7; j >= 0; j--) {
                 bits.Add((data[i] >> j) & 1);
-                Console.Write($"{(data[i] >> j) & 1}");
             }
         }
 
