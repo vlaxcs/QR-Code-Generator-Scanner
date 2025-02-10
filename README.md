@@ -21,6 +21,7 @@ Această aplicație pune la dispoziție o soluție completă pentru encodarea ș
 
 ### Interfața pentru utilizator
 
+Disponibilă la adresa: https://vlaxcs.github.io/QR-Code-Generator-Scanner
 ![alt text](UI.png)
 
 ### Date de intrare
