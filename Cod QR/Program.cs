@@ -4,9 +4,9 @@ for(int v = 1; v <= 40; v++) {
         Console.WriteLine($"Testing V{v} E{e}");
         var qr = QRCodeGenerator.Generate("PROJECT NAYUKI 3141592653589", e, v);
 
-        //qr.Print();
+        qr.Print();
 
-        qr.SaveToFile(@$"C:\Dalv\TEST\V{v}E{e}.png", 15);
+        qr.SaveToFile(@$"C:\Users\stefa\Desktop\QRCodeTest\V{v}E{e}.png", 15);
         Console.WriteLine();
     }
 }
