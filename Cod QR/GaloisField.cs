@@ -220,7 +220,6 @@ public class GaloisField {
             if(PolyEval(err_poly, exp[255 - i]) == 0)
                 err_pos.Add(nmess - i - 1);
 
-        Console.WriteLine($"{err_pos.Count}, {errs}");
         if(err_pos.Count != errs) return null;
         return err_pos.ToArray();
     }

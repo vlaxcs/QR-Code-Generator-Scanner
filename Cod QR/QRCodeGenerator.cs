@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-public static class QRCodeGenerator {
+public static partial class QRCodeGenerator {
     static int[][] code;
     static int version;
     static int ECCLevel;
@@ -60,28 +60,6 @@ public static class QRCodeGenerator {
         new ECCGrouping[]{ new ECCGrouping(30, 20, 117, 4, 118), new ECCGrouping(28, 40, 47, 7, 48), new ECCGrouping(30, 43, 24, 22, 25), new ECCGrouping(30, 10, 15, 67, 16)},
         new ECCGrouping[]{ new ECCGrouping(30, 19, 118, 6, 119), new ECCGrouping(28, 18, 47, 31, 48), new ECCGrouping(30, 34, 24, 34, 25), new ECCGrouping(30, 20, 15, 61, 16)},
     };
-
-    struct ECCGrouping {
-        public int ECCodewordsPerBlock;
-        public int G1Count, codewordsInG1;
-        public int G2Count, codewordsInG2;
-
-        public int TotalDataBlocks => codewordsInG1 * G1Count + codewordsInG2 * G2Count;
-        public int TotalECCBlocks => ECCodewordsPerBlock * (G1Count + G2Count);
-        public int TotalBlocks => TotalDataBlocks + TotalECCBlocks;
-
-        public ECCGrouping(int ECCodewordsPerBlock, int G1Count, int codewordsInG1, int G2Count, int codewordsInG2) {
-            this.ECCodewordsPerBlock = ECCodewordsPerBlock;
-            this.G1Count = G1Count;
-            this.codewordsInG1 = codewordsInG1;
-            this.G2Count = G2Count;
-            this.codewordsInG2 = codewordsInG2;
-        }
-
-        public override string ToString() {
-            return $"{ECCodewordsPerBlock} {G1Count} {codewordsInG1} {G2Count} {codewordsInG2}";
-        }
-    }
 
     public static QRCode Generate(string message, int errorCorrectionLevel = 1, int minVersion = 1, DataType? type = null) {
         // Find the optimal dataType or use the one passed in

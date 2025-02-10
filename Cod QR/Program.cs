@@ -1,8 +1,22 @@
-﻿
+﻿var linkQR = QRCodeGenerator.Generate("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas bibendum duis.", 2, 7);
+linkQR.Print();
+
+var message = QRCodeDecoder.DecodeQR(linkQR);
+Console.WriteLine(message);
+
+//var teamQR = QRCodeGenerator.Generate("Clatite");
+//teamQR.Print();
+
+//var message = QRCodeDecoder.DecodeQR(linkQR);
+//Console.WriteLine(message);
+
+
+return;
+
 for(int v = 1; v <= 40; v++) {
     for(int e = 0; e < 4; e++) {
         Console.WriteLine($"Testing V{v} E{e}");
-        var qr = QRCodeGenerator.Generate("PROJECT NAYUKI 3141592653589", e, v);
+        var qr = QRCodeGenerator.Generate("Lorem ipsum est.", e, v);
 
         //qr.Print();
 

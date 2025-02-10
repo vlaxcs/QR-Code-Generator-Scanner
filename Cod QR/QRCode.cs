@@ -275,6 +275,7 @@ public partial class QRCode {
         }
 
         datatype = (DataType)((ans[0]) << 3 | ans[1] << 2 | ans[2] << 1 | ans[3]);
+
         return blocks;
     }
 
