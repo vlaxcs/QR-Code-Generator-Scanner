@@ -14,7 +14,7 @@ Această aplicație pune la dispoziție o soluție completă pentru encodarea ș
 |--------------------------|-------------------------------------------|  
 | **Tipul encodării**      | **Numeric / Alphanumeric / Byte / Kanji**  |  
 | **Versiunea codului QR** | Un număr între 1 și 40, în funcție de dimensiunea datelor |  
-| **Masca aplicată**       | Un număr de la 1 la 7, specific unui pattern anume |  
+| **Masca aplicată**       | Un număr de la 0 la 7, specific unui pattern anume |  
 | **Procese intermediare** | Informații despre erori ce nu pot fi tratate |  
 
 ## **Scanner**
