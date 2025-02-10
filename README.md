@@ -66,15 +66,15 @@ var code = QRCodeImageParser.Parse(@"filepath");
 
 - Reed Solomon <sup>[1](#Referințe)</sup>
     - Clasa `Galois Field` conține metode utile în prelucrarea matematică a decodării/encodării cu algoritmul lui Reed-Solomon.
-        - `GeneratePolynomials`. generează valorile log/antilog<sup>[5](#Referințe)</sup> în Galois Field(256).
-        - `Multiply` și `Divide` înmulțește, respectiv împarte două numere cu log/antilog. ![alt text](./README%20Resources/log.png)
+        - `GeneratePolynomials`. generează valorile log/antilog<sup>[4](#Referințe)</sup> în Galois Field(256).
+        - `Multiply` și `Divide` înmulțește, respectiv împarte două numere cu log/antilog. <br>
+        ![alt text](./README%20Resources/log.png)
         - `PolyMul` și `PolyAdd` înmulțește, respectiv adună două polinoame (tradițional).
         - `PolyScale` scalează un polinom cu un număr natural.
         - `PolyEval` evaluează valoarea unui polinom pentru un x dat. Pentru a corespunde restricțiilor Galois Field(256), termenii se adună cu operandul `XOR`.
         - `RSGeneratorPoly` generează un polinom Reed Solomon, în funcție de numărul de blocuri de error correction specificat (`nsym`).
 
-        - `Decode` și `Encode` folosesesc un byte array (UTF-8). Șirul este ulterior decodat porționat, în chunk-uri de câte 256
-
+        - `Decode` și `Encode` folosesesc un byte array (UTF-8). Șirul este ulterior decodat porționat, în chunk-uri de câte 256.
 
 ### Date de ieșire
 - Mesajul decodat din codul QR primit
@@ -148,6 +148,9 @@ Se grupează blocurile de data în short și long blocuri (conform [acestei tabe
 0. https://en.wikipedia.org/wiki/QR_code
 1. https://en.wikipedia.org/wiki/Reed%E2%80%93Solomon_error_correction#MATLAB_example
 2. https://www.thonky.com/qr-code-tutorial/error-correction-table
-3. https://blog.qartis.com/decoding-small-qr-codes-by-hand/
-4. https://www.nayuki.io/page/creating-a-qr-code-step-by-step
-5. https://www.thonky.com/qr-code-tutorial/error-correction-coding#step-6-understand-multiplication-with-logs-and-antilogs
+3. https://www.nayuki.io/page/creating-a-qr-code-step-by-step
+4. https://www.thonky.com/qr-code-tutorial/error-correction-coding#step-6-understand-multiplication-with-logs-and-antilogs
+
+## Internet never disappoints
+-1. https://blog.qartis.com/decoding-small-qr-codes-by-hand/
+-2. https://people.inf.ethz.ch/gander/papers/qrneu.pdf 
