@@ -64,11 +64,11 @@ public static partial class QRCodeGenerator {
     public static QRCode Generate(string message, int errorCorrectionLevel = 1, int minVersion = 1, DataType? type = null) {
         // Find the optimal dataType or use the one passed in
         QREncodedMessage encodedMessage = new QREncodedMessage();
-        if(type == null) {
+        if (type == null) {
             var types = new DataType[] { DataType.Numeric, DataType.Alphanumeric, DataType.Byte, DataType.Kanji };
 
             bool foundAny = false;
-            foreach(var dataType in types) {
+            foreach (var dataType in types) {
                 try {
                     encodedMessage = MessageEncoder.EncodeMessage(dataType, message);
                     type = dataType;
@@ -79,7 +79,7 @@ public static partial class QRCodeGenerator {
                 } catch { }
             }
 
-            if(!foundAny) throw new Exception("Couldnt find a compatible encoding data type");
+            if (!foundAny) throw new Exception("Couldnt find a compatible encoding data type");
         } else {
             encodedMessage = MessageEncoder.EncodeMessage(type.Value, message);
         }
@@ -96,15 +96,18 @@ public static partial class QRCodeGenerator {
 
         List<byte> bitConversion = new List<byte>();
 
-        AppendBits(bitConversion, (int)type.Value, 4);
+        AppendBits(bitConversion, (int)type.Value, 4); //APPEMD ENCODING METHOD
 
         int nrOfLengthBits = GetNumberOfLengthBits(version, type.Value);
 
-        AppendBits(bitConversion, encodedMessage.bitsArray.Length / 8, nrOfLengthBits);
-        for(int i = 0; i < encodedMessage.bitsArray.Length; i++) {
+        AppendBits(bitConversion, message.Length, nrOfLengthBits);//APPEND BITS LENGHT
+        for (int i = 0; i < encodedMessage.bitsArray.Length; i++) {
             bitConversion.Add(encodedMessage[i]);
         }
-
+        for (int i = 0; i <= 3; i++) 
+        {
+            bitConversion.Add(0);
+        }
         var numberOfBlocks = grouping.TotalDataBlocks;
         var numberOfBits = numberOfBlocks * 8;
         while(bitConversion.Count < numberOfBits) {
@@ -120,14 +123,14 @@ public static partial class QRCodeGenerator {
                 dataBlocks[i] |= bitConversion[i * 8 + b];
             }
         }
-
+        
         bool alternateFiller = true; // Used to alternate between 0xEC and 0x11
-        for(int i = bitConversion.Count / 8; i < numberOfBlocks; i++) {
+        for(int i = (bitConversion.Count) / 8; i < numberOfBlocks; i++) {
             if(alternateFiller) dataBlocks[i] = 0xEC;
             else dataBlocks[i] = 0x11;
             alternateFiller = !alternateFiller;
         }
-
+         
         // Populate G1 type (short) blocks
         for(int i = 0; i < grouping.G1Count; i++) {
             var range = dataBlocks[(i * grouping.codewordsInG1)..((i + 1) * grouping.codewordsInG1)];
