@@ -1,21 +1,52 @@
-window.addEventListener("load", main);
-function main() {
-    document.getElementById("get").onclick = handleGet;
-    document.getElementById("post").onclick = handlePost;
-
-    document.getElementById("scannerFile").addEventListener("change", function(event) {
-        const file = event.target.files[0];
-
-        if(!file) return;
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const img = document.getElementById("scannerPreview");
-            img.src = e.target.result;
-            img.style.display = "block";
-            img.style.width = "300px";
+function updateVersion(version){
+    const spanVersion = document.getElementById("versionValue");
+    spanVersion.innerHTML = version.value;
+}
+function pancaker(field){
+    var i = 20, cnt = 0.2;
+    setInterval(() => {
+        i += cnt;
+        if (i > 50.0) {
+            cnt = -0.7;
         }
-        reader.readAsDataURL(file);
+        else if (i < 20){
+            cnt = 0.2;
+        }
+        field.style.backgroundSize = i + "px";
+    }, 25);
+
+}
+window.onload = async function(){
+   // document.getElementById("get").onclick = handleGet;
+   // document.getElementById("post").onclick = handlePost;
+   const preview = document.getElementById("preview");
+   if (preview){
+       pancaker(preview);
+    }
+    const version = document.getElementById("version");
+    if (version) {
+        updateVersion(version);
+        version.addEventListener("input", function(event) {
+            updateVersion(version);
+        });
+    }
+
+    const fileUploader = document.getElementById("scannerFile");
+    fileUploader.addEventListener("change", function(event) {
+        const file = event.target.files[0];
+        if(!file) {
+            preview.src = "none";
+            preview.visibility = "hidden";
+            return;
+        } else {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                console.log(e.target.result);
+                preview.src = e.target.result;
+            };
+    
+            reader.readAsDataURL(file);
+        }
     });
 }
 
@@ -40,6 +71,7 @@ function handleGet() {
         alert(error);
     });
 }
+
 async function handlePost() {
     var title = document.getElementById("messageTitle").value;
     var content = document.getElementById("messageBody").value;
