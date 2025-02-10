@@ -1,16 +1,17 @@
-﻿
-// CCCC  L      AAAAA  TTTTT III TTTTT EEEEE
-//C      L     A     A   T    I    T   E
-//C      L     AAAAAAA   T    I    T   EEEE
-//C      L     A     A   T    I    T   E
-// CCCC  LLLLL A     A   T   III   T   EEEEE
+﻿/* <><><><>< QR CODE GENERATOR ><><><><><>
 
-//<><><><><><> QR CODE SCANNER <><><><><><> */
+ CCCC  L      AAAAA  TTTTT III TTTTT EEEEE
+C      L     A     A   T    I    T   E
+C      L     AAAAAAA   T    I    T   EEEE
+C      L     A     A   T    I    T   E
+ CCCC  LLLLL A     A   T   III   T   EEEEE
+
+<><><><><>< QR CODE GENERATOR ><><><><><> */
 
 Console.WriteLine("Lectures link:");
 var qr = QRCodeGenerator.Generate("https://cs.unibuc.ro/~crusu/asc/lectures.html");
 qr.Print();
-qr.SaveToFile(@"../../../../OUTPUT/lecturesLink.png");
+qr.SaveToFile(@"../../../../Example Input/lecturesLink.png");
 Console.WriteLine($"Scanning qr...");
 Console.WriteLine(QRCodeDecoder.DecodeQR(qr));
 Console.WriteLine();
@@ -19,7 +20,7 @@ Console.WriteLine("\n");
 Console.WriteLine($"And then comes, our team name \"Clatite\"");
 qr = QRCodeGenerator.Generate("Clatite");
 qr.Print();
-qr.SaveToFile(@"../../../../OUTPUT/teamName.png");
+qr.SaveToFile(@"../../../../Example Output/teamName.png");
 Console.WriteLine($"Scanning qr...");
 Console.WriteLine(QRCodeDecoder.DecodeQR(qr));
 Console.WriteLine();
@@ -39,13 +40,23 @@ while(true) {
     Console.WriteLine("Generating QR...");
     qr = QRCodeGenerator.Generate(message, eccLevel, minVersion);
     qr.Print();
-    qr.SaveToFile("../../../../OUTPUT/myqr.png");
+    qr.SaveToFile("../../../../Example Output/myqr.png");
 
     Console.WriteLine("\n\n");
 }
 
-//// names of files which contains QR codes (it must be a PNG)
-//List<string> files = new List<string> { "Clatite", "QR2", "QR3", "QR10", "QR11", "QR12", "QR14", "QR16", "QR17", "QR19" };
+/* <><><><><> QR CODE SCANNER <><><><><><>
+
+ CCCC  L      AAAAA  TTTTT III TTTTT EEEEE
+C      L     A     A   T    I    T   E
+C      L     AAAAAAA   T    I    T   EEEE
+C      L     A     A   T    I    T   E
+ CCCC  LLLLL A     A   T   III   T   EEEEE
+
+<><><><><><> QR CODE SCANNER <><><><><><> */
+
+// names of files which contains QR codes (it must be a PNG)
+//List<string> files = new List<string> { "Clatite", "QR2"};
 
 //foreach(var filename in files) {
 //    Utility.WriteNeutral($"Filename: {filename}.png");
@@ -71,11 +82,3 @@ while(true) {
 
 //    Utility.ResetConsole();
 //}
-
-// CCCC  L      AAAAA  TTTTT III TTTTT EEEEE
-//C      L     A     A   T    I    T   E
-//C      L     AAAAAAA   T    I    T   EEEE
-//C      L     A     A   T    I    T   E
-// CCCC  LLLLL A     A   T   III   T   EEEEE
-
-//<><><><><><> QR CODE GENERATOR <><><><><><> */
