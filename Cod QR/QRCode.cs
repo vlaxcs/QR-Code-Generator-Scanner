@@ -232,7 +232,6 @@ public partial class QRCode {
         }
         return result;
     }
-
     int[] GetAlignmentPoints() {
         int[] AlignmentCoords = GetAlignmentCoords();
         if(AlignmentCoords.Length == 0) return new int[0];
@@ -250,6 +249,7 @@ public partial class QRCode {
 
         return ans;
     }
+   
     byte[] GetAllDataBlocks() {
         List<int> ans = new List<int>();
 
@@ -296,7 +296,6 @@ public partial class QRCode {
         return nr;
     }
 
-
     void ApplyMask(int mask) {
         for(int i = 0; i < code.Length; i++) {
             for(int j = 0; j < code.Length; j++) {
@@ -319,7 +318,6 @@ public partial class QRCode {
         }
         for(int i = 0; i <= 6; i++) {
             code[code.Length - i - 1][8] = (maskBits >> (14 - i)) & 1;
-
         }
         for(int j = 0; j <= 7; j++) {
             code[8][code.Length - 1 - j] = (maskBits >> j) & 1;
