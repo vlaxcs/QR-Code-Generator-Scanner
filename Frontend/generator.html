@@ -6,7 +6,7 @@
     <title>Pancakes: QR Code Generator</title>
     <link rel="stylesheet" href="./css/scanner.css">
     <link rel="icon" href="./assets/logo.png">
-    <script src="main.js"></script>
+    <script src="./js/main.js"></script>
 </head>
 <body>
     <header>
@@ -22,7 +22,7 @@
             <center><h1>Guide</h1></center>
             <div class="step">
                 <h2>Step 1</h2>
-                <p>Put any message in the text box!</p>
+                <p>Put any <b style="color: rgb(255, 183, 0)">message</b> in the text box!</p>
                 <p style="font-size: 1.2vw"><i>If you already have a QR Code, you can use our <a href="../Frontend/scanner.html">scanner</a>!</i></p>
             </div>
 
@@ -68,6 +68,18 @@
         <div class="result">
             <div class="RA">
                 <h1>Result</h1>
+            </div>
+
+            <div class="RB">
+                <img id="generated">
+            </div>
+
+            <div class="RC">
+                <p class="mask">N/A</p>
+                <p class="version">N/A</p>
+                <p class="ecc-level">N/A</p>
+            </div>
+
             </div>
         </div>
 

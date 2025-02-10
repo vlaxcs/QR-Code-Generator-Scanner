@@ -6,7 +6,7 @@
     <title>Pancakes: QR Code Scanner</title>
     <link rel="stylesheet" href="./css/scanner.css">
     <link rel="icon" href="./assets/logo.png">
-    <script src="main.js"></script>
+    <script src="./js/main.js"></script>
 </head>
 <body>
     <header>
@@ -22,7 +22,7 @@
             <center><h1>Guide</h1></center>
             <div class="step">
                 <h2>Step 1</h2>
-                <p>Find a QR code!<br></p>
+                <p>Find a <b style="color: rgb(255, 183, 0)">QR code</b>!</p>
                 <p style="font-size: 1.2vw"><i>If you can't find one, you can use our <a href="../Frontend/generator.html">generator</a>!</i></p>
             </div>
 
@@ -41,9 +41,11 @@
             <div class="UA">
                 <h1>Upload</h1>
             </div>
+
             <div class="UB">
                 <img id="preview"> 
             </div>
+
             <div id="scannerForm">
 
                 <form id="scannerForm"> 
@@ -53,7 +55,7 @@
                 </form>
 
             </div>
-
+            
         </div>
 
         <!-- To be updated -->
@@ -61,8 +63,19 @@
             <div class="RA">
                 <h1>Result</h1>
             </div>
-        </div>
+            
+            <div class="RB">
+                <p class="message">N/A</p>
+            </div>
 
+            <div class="RC">
+                <p class="mask">N/A</p>
+                <p class="version">N/A</p>
+                <p class="ecc-level">N/A</p>
+            </div>
+
+            </div>
+        </div>
     </main>
 
     <footer>

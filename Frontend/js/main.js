@@ -17,11 +17,15 @@ function pancaker(field){
 
 }
 window.onload = async function(){
-   // document.getElementById("get").onclick = handleGet;
-   // document.getElementById("post").onclick = handlePost;
-   const preview = document.getElementById("preview");
-   if (preview){
+    // document.getElementById("get").onclick = handleGet;
+    // document.getElementById("post").onclick = handlePost;
+    const preview = document.getElementById("preview");
+    const result = document.getElementById("generated");
+    if (preview){
        pancaker(preview);
+    }
+    else if (result){
+        pancaker(result);
     }
     const version = document.getElementById("version");
     if (version) {
