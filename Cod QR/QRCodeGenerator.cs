@@ -215,7 +215,7 @@
         int MinScore = 999999999;
         int bestMask = -1;
         for(int i = 0; i <= 7; i++) {
-            PutMaskBits(ECCLevel ^ 1, i);
+            PutMaskBits(ECCLevel , i);
             ApplyMask(i);
             int penaltyScore = CalculatePenaltyScore();
             if(penaltyScore < MinScore) {
@@ -225,7 +225,7 @@
             ApplyMask(i);
         }
         mask = bestMask;
-        PutMaskBits(ECCLevel ^ 1, mask);
+        PutMaskBits(ECCLevel , mask);
         ApplyMask(mask);
     }
     static void ApplyVersionBits() {
