@@ -43,23 +43,33 @@ public partial class QRCode {
     void Initialize() {
         int mask1 = 0;
         int mask2 = 0;
-        for (int j = 0; j <= 5; j++) {
+        for (int j = 0; j <= 5; j++)
+        {
             mask1 |= code[8][j] << (14 - j);
         }
-        for (int j = 6; j <= 14; j++) {
+        for (int j = 6; j <= 7; j++)
+        {
             mask1 |= code[8][j + 1] << (14 - j);
         }
         mask1 |= code[7][8] << (14 - 8);
-        for (int i = 0; i <= 6; i++) mask2 |= code[code.Length - i - 1][8] << (14 - i);
-        for (int i = 0; i <= 7; i++) mask2 |= code[8][code.Length - 1 - i] << i;
-        Print();
+        for (int i = 0; i <= 5; i++)
+        {
+            mask1 |= code[i][8] << (i);
+        }
+        for (int i = 0; i <= 6; i++)
+        {
+            mask2 |= code[code.Length - i - 1][8] << (14 - i);
+
+        }
+        for (int j = 0; j <= 7; j++)
+        {
+            mask2 |= code[8][code.Length - 1 - j] << j;
+        }
         mask1 = GetClosestDataEC(mask1);
         mask2 = GetClosestDataEC(mask2);
         if (mask1 != mask2)
         {
-           
-            Console.WriteLine(mask1);
-            Console.WriteLine(mask2);
+          
             throw new Exception("Mask bits dont match"); 
         
         }
