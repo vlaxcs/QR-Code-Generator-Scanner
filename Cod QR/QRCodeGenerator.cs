@@ -176,12 +176,8 @@
         PutBlocks();
         PutAligmentPoints();
         ApplyVersionBits();
-        Console.WriteLine("Setting data blocks...");
         SetAllDataBlocks(dataBlocks);
-        Console.WriteLine("Data blocks set");
-        Console.WriteLine("Placing best mask...");
         PlaceBestMask();
-        Console.WriteLine("Placed best mask");
 
         return new QRCode(code);
     }
@@ -219,7 +215,7 @@
         int MinScore = 999999999;
         int bestMask = -1;
         for(int i = 0; i <= 7; i++) {
-            PutMaskBits(ECCLevel, i);
+            PutMaskBits(ECCLevel ^ 1, i);
             ApplyMask(i);
             int penaltyScore = CalculatePenaltyScore();
             if(penaltyScore < MinScore) {
@@ -229,7 +225,7 @@
             ApplyMask(i);
         }
         mask = bestMask;
-        PutMaskBits(ECCLevel, mask);
+        PutMaskBits(ECCLevel ^ 1, mask);
         ApplyMask(mask);
     }
     static void ApplyVersionBits() {
