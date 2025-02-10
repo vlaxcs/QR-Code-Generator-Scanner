@@ -60,6 +60,7 @@ public static class QRCodeGenerator {
         new ECCGrouping[]{ new ECCGrouping(30, 20, 117, 4, 118), new ECCGrouping(28, 40, 47, 7, 48), new ECCGrouping(30, 43, 24, 22, 25), new ECCGrouping(30, 10, 15, 67, 16)},
         new ECCGrouping[]{ new ECCGrouping(30, 19, 118, 6, 119), new ECCGrouping(28, 18, 47, 31, 48), new ECCGrouping(30, 34, 24, 34, 25), new ECCGrouping(30, 20, 15, 61, 16)},
     };
+
     struct ECCGrouping {
         public int ECCodewordsPerBlock;
         public int G1Count, codewordsInG1;

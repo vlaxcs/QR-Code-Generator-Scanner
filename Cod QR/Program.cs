@@ -5,6 +5,7 @@ qr.Print();
 qr.SaveToFile(@"C:\Dalv\TEST\hello.png");
 
 
+
 //var qr = QRCodeImageParser.Parse(@"C:\Dalv\TEST\hello.png");
 
 //qr.Print();
