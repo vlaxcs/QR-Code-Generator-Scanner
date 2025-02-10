@@ -288,7 +288,7 @@ public static class QRCodeGenerator {
             ApplyMask(i);
         }
         mask = bestMask;
-        PutMaskBits(ECCLevel, mask);
+        PutMaskBits(ECCLevel ^ 1, mask);
         ApplyMask(mask);
     }
     static void ApplyVersionBits() {
@@ -296,10 +296,12 @@ public static class QRCodeGenerator {
             return;
         }
         int ECCVersion = GetVersionBits(version);
-        for(int j = 0; j < 6; j++) {
+
+
+        for (int j = 0; j < 6; j++) {
             for(int i = 0; i < 3; i++) {
-                code[code.Length - 11 + i][j] = ECCVersion >> (17 - j * 3 + i) & 1;
-                code[j][code.Length - 11 + i] = ECCVersion >> (17  - j * 3 + i) & 1;
+                code[code.Length - 11 + (2-i)][5-j] = ECCVersion >> (17 - j * 3 - i) & 1;
+                code[5-j][code.Length - 11 + (2-i)] = ECCVersion >> (17  - j * 3 - i) & 1;
 
             }
         }
@@ -499,8 +501,8 @@ public static class QRCodeGenerator {
             }
         }
     }
-    static int GetVersionBits(int Version) { //TODO: FIX THIS FUNCTION
-        if(version < 7 || version > 40)
+    static int GetVersionBits(int Version) { 
+        if(Version < 7 || Version > 40)
             throw new Exception("Version is not good");
         int initnr = Version;
         Version <<= 12;
@@ -512,8 +514,8 @@ public static class QRCodeGenerator {
             }
             Version ^= gen;
             gen = initGen;
-        }
-        Version += initnr << 12;
+        }   
+        Version |= initnr << 12;
         return Version;
     }
 
