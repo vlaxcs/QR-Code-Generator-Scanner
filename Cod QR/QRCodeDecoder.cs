@@ -1,6 +1,8 @@
 ﻿using System.Text;
 
 public static partial class QRCodeDecoder {
+
+    // https://www.thonky.com/qr-code-tutorial/error-correction-table
     static ECCGrouping[][] blocksInfo = {
         new ECCGrouping[]{ new ECCGrouping(7, 1, 19, 0, 0), new ECCGrouping(10, 1, 16, 0, 0), new ECCGrouping(13, 1, 13, 0, 0), new ECCGrouping(17, 1, 9, 0, 0)},
         new ECCGrouping[]{ new ECCGrouping(10, 1, 34, 0, 0), new ECCGrouping(16, 1, 28, 0, 0), new ECCGrouping(22, 1, 22, 0, 0), new ECCGrouping(28, 1, 16, 0, 0)},
@@ -88,14 +90,6 @@ public static partial class QRCodeDecoder {
             groupedData[i] = gf.Decode(groupedData[i]);
         }
 
-        //Console.WriteLine($"GROUPED:");
-        //for(int i = 0; i < totalGroups; i++) {
-        //    Console.Write($"G{i}: ");
-        //    PrintHexa(groupedData[i]);
-        //    Console.WriteLine();
-        //}
-        //Console.WriteLine();
-
 
         List<byte> dataReconstruction = new List<byte>();
         for(int i = 0; i < totalGroups; i++) {
@@ -104,12 +98,6 @@ public static partial class QRCodeDecoder {
             }
         }
         var data = dataReconstruction.ToArray();
-
-        //Console.WriteLine($"RECONSTRUCTION:");
-        //for(int i = 0; i < data.Length; i++) {
-        //    Console.Write($"{Convert.ToString(data[i], 16).PadLeft(2, '0').ToUpper()} ");
-        //}
-        //Console.WriteLine();
 
 
         List<int> bits = new List<int>();
@@ -146,12 +134,6 @@ public static partial class QRCodeDecoder {
         return message;
     }
 
-    static void PrintHexa(byte[] arr) {
-        for(int i = 0; i < arr.Length; i++) {
-            Console.Write($"{Convert.ToString(arr[i], 16).PadLeft(2, '0').ToUpper()} ");
-        }
-    }
-
     static QRMessage DecodeNumericMessage(int[] bits, int messageLen, int encodingRange) {
         encodingRange = 4 + encodingRange;
 
@@ -179,11 +161,6 @@ public static partial class QRCodeDecoder {
                 message[message.Length - i - 1] = remainingBlock % 10;
             }
         }
-
-        //Console.WriteLine("Message: ");
-        //for(int i = 0; i < message.Length; i++) {
-        //    Console.Write($"{message[i]}");
-        //}
 
         return new QRMessage(DataType.Numeric, message);
     }

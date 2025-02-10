@@ -4,7 +4,7 @@ namespace QREncoder {
     public class ByteEncoder : IEncoder {
         public byte[] Encode(string input) {
             var bytes = Encoding.ASCII.GetBytes(input);
-            
+
             var encoded = new List<byte>();
 
             for(int i = 0; i < bytes.Length; i++) {

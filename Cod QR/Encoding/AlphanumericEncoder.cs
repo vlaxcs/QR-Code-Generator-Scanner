@@ -27,7 +27,7 @@
 
         int EncodeChar(char c) {
             var ind = Array.IndexOf(alphanumericConversion, c);
-            if(ind < 0 ) throw new Exception("Message cant be encoded alphanumerically");
+            if(ind < 0) throw new Exception("Message cant be encoded alphanumerically");
 
             return ind;
         }

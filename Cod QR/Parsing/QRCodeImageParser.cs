@@ -147,11 +147,11 @@ public static class QRCodeImageParser {
 
 
     static readonly Func<int, int, int, (int, int)>[] OrientationLUT = {
-            (i, j, n) => (i, j), // Empty corner Bottom Right
-            (i, j, n) => (j, n - i - 1), // Empty corner Bottom Left
-            (i, j, n) => (n - i - 1, n - j - 1), // Empty corner Top Left
-            (i, j, n) => (n - j - 1, i), // Empty corner Top Right
-        };
+            (i, j, n) => (i, j),                    // Empty corner Bottom Right
+            (i, j, n) => (j, n - i - 1),            // Empty corner Bottom Left
+            (i, j, n) => (n - i - 1, n - j - 1),    // Empty corner Top Left
+            (i, j, n) => (n - j - 1, i),            // Empty corner Top Right
+    };
     static int[][] CheckOrientation(int[][] rawQR) {
         int n = rawQR.Length;
         bool bottomSymmetric = true, rightSymmetric = true;
