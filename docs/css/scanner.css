@@ -216,6 +216,13 @@ main{
     align-items: left;
 }
 
+.RB{
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    max-height: 300px;
+}
+
 .message::before{
     content: "Message: ";
 }
