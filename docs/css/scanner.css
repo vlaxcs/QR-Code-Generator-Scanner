@@ -37,6 +37,7 @@ header a:nth-of-type(1n + 2){
 main{
     display: grid;
     grid-template-columns: 28% 36% 36%;
+    grid-template-rows: auto;
 }
 .guide{
     padding: 1vw;
@@ -228,6 +229,9 @@ main{
 .ecc-level::before{
     content: "Error correction level: ";
 }
+.uploaded::before{
+    content: "Uploaded at: ";
+}
 
 footer{
     display: flex;
@@ -238,4 +242,62 @@ footer{
     border-top: 1px solid #3d444d;
     color: white;
     font-weight: bold;
+}
+
+@media (max-width: 800px) {
+    .UA h1, .IA h1, .RA h1{
+        font-size: 2em;
+    }
+    
+    .guide {
+        display: none;
+        visibility: hidden !important;
+    }
+
+    .upload, .input, .result {
+        grid-template-columns: 100vw;
+        grid-template-rows: auto auto auto;
+        gap: 10px;
+    }
+
+    main {
+        display: grid;
+        grid-template-columns: auto !important;
+        grid-template-rows: auto auto auto;
+        gap: 10px;
+    }
+
+    header {
+        padding: 2vw;
+        height: 8vh;
+    }
+
+    header img {
+        width: 6vh;
+        margin-left: 2%;
+    }
+
+    header a:nth-of-type(1n + 2) {
+        margin-left: 3vw;
+        font-size: 2.5vh;
+    }
+
+    .IB form label, .IB form textarea {
+        font-size: 1.5vw;
+    }
+
+    .scanButton, .customFileInput, .encodeButton {
+        padding: 12px;
+        font-size: 1.2vw;
+    }
+
+    .UB #preview, .RB #generated {
+        width: 250px;
+        height: 250px;
+    }
+
+    footer {
+        height: 10vh;
+        font-size: 1.2vw;
+    }
 }
