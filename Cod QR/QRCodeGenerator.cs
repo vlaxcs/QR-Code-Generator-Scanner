@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-public static class QRCodeGenerator {
+public static partial class QRCodeGenerator {
     static int[][] code;
     static int version;
     static int ECCLevel;
@@ -60,36 +60,15 @@ public static class QRCodeGenerator {
         new ECCGrouping[]{ new ECCGrouping(30, 20, 117, 4, 118), new ECCGrouping(28, 40, 47, 7, 48), new ECCGrouping(30, 43, 24, 22, 25), new ECCGrouping(30, 10, 15, 67, 16)},
         new ECCGrouping[]{ new ECCGrouping(30, 19, 118, 6, 119), new ECCGrouping(28, 18, 47, 31, 48), new ECCGrouping(30, 34, 24, 34, 25), new ECCGrouping(30, 20, 15, 61, 16)},
     };
-    struct ECCGrouping {
-        public int ECCodewordsPerBlock;
-        public int G1Count, codewordsInG1;
-        public int G2Count, codewordsInG2;
-
-        public int TotalDataBlocks => codewordsInG1 * G1Count + codewordsInG2 * G2Count;
-        public int TotalECCBlocks => ECCodewordsPerBlock * (G1Count + G2Count);
-        public int TotalBlocks => TotalDataBlocks + TotalECCBlocks;
-
-        public ECCGrouping(int ECCodewordsPerBlock, int G1Count, int codewordsInG1, int G2Count, int codewordsInG2) {
-            this.ECCodewordsPerBlock = ECCodewordsPerBlock;
-            this.G1Count = G1Count;
-            this.codewordsInG1 = codewordsInG1;
-            this.G2Count = G2Count;
-            this.codewordsInG2 = codewordsInG2;
-        }
-
-        public override string ToString() {
-            return $"{ECCodewordsPerBlock} {G1Count} {codewordsInG1} {G2Count} {codewordsInG2}";
-        }
-    }
 
     public static QRCode Generate(string message, int errorCorrectionLevel = 1, int minVersion = 1, DataType? type = null) {
         // Find the optimal dataType or use the one passed in
         QREncodedMessage encodedMessage = new QREncodedMessage();
-        if(type == null) {
+        if (type == null) {
             var types = new DataType[] { DataType.Numeric, DataType.Alphanumeric, DataType.Byte, DataType.Kanji };
 
             bool foundAny = false;
-            foreach(var dataType in types) {
+            foreach (var dataType in types) {
                 try {
                     encodedMessage = MessageEncoder.EncodeMessage(dataType, message);
                     type = dataType;
@@ -100,13 +79,13 @@ public static class QRCodeGenerator {
                 } catch { }
             }
 
-            if(!foundAny) throw new Exception("Couldnt find a compatible encoding data type");
+            if (!foundAny) throw new Exception("Couldnt find a compatible encoding data type");
         } else {
             encodedMessage = MessageEncoder.EncodeMessage(type.Value, message);
         }
 
-        version = DetermineFittingVersion(encodedMessage, minVersion) - 1;
         ECCLevel = errorCorrectionLevel;
+        version = DetermineFittingVersion(encodedMessage, minVersion, type.Value) - 1;
 
         ECCGrouping grouping = blocksInfo[version][ECCLevel];
 
@@ -117,12 +96,18 @@ public static class QRCodeGenerator {
 
         List<byte> bitConversion = new List<byte>();
 
-        AppendBits(bitConversion, (int)type.Value, 4);
-        AppendBits(bitConversion, encodedMessage.bitsArray.Length / 8, 10 - (int)Math.Log2((int)type * 2 + 1) + 1);
-        for(int i = 0; i < encodedMessage.bitsArray.Length; i++) {
+        AppendBits(bitConversion, (int)type.Value, 4); //APPEMD ENCODING METHOD
+
+        int nrOfLengthBits = GetNumberOfLengthBits(version, type.Value);
+
+        AppendBits(bitConversion, message.Length, nrOfLengthBits);//APPEND BITS LENGHT
+        for (int i = 0; i < encodedMessage.bitsArray.Length; i++) {
             bitConversion.Add(encodedMessage[i]);
         }
-
+        for (int i = 0; i <= 3; i++) 
+        {
+            bitConversion.Add(0);
+        }
         var numberOfBlocks = grouping.TotalDataBlocks;
         var numberOfBits = numberOfBlocks * 8;
         while(bitConversion.Count < numberOfBits) {
@@ -138,28 +123,28 @@ public static class QRCodeGenerator {
                 dataBlocks[i] |= bitConversion[i * 8 + b];
             }
         }
-
+        
         bool alternateFiller = true; // Used to alternate between 0xEC and 0x11
-        for(int i = bitConversion.Count / 8; i < numberOfBlocks; i++) {
+        for(int i = (bitConversion.Count) / 8; i < numberOfBlocks; i++) {
             if(alternateFiller) dataBlocks[i] = 0xEC;
             else dataBlocks[i] = 0x11;
             alternateFiller = !alternateFiller;
         }
-
+         
         // Populate G1 type (short) blocks
         for(int i = 0; i < grouping.G1Count; i++) {
             var range = dataBlocks[(i * grouping.codewordsInG1)..((i + 1) * grouping.codewordsInG1)];
             var ECCBlock = galoisField.Encode(range);
 
             // Loop over just the error correction blocks
-            Console.Write($"G1: ");
-            PrintHexa(range);
-            Console.Write(" | ECC: ");
+            //Console.Write($"G1: ");
+            //PrintHexa(range);
+            //Console.Write(" | ECC: ");
             for(int c = 0; c < grouping.ECCodewordsPerBlock; c++) {
-                Console.Write($"{Convert.ToString(ECCBlock[grouping.codewordsInG1 + c], 16).PadLeft(2, '0').ToUpper()} ");
+                //Console.Write($"{Convert.ToString(ECCBlock[grouping.codewordsInG1 + c], 16).PadLeft(2, '0').ToUpper()} ");
                 ECCBlocks[i * grouping.ECCodewordsPerBlock + c] = ECCBlock[grouping.codewordsInG1 + c];
             }
-            Console.WriteLine();
+            //Console.WriteLine();
         }
 
         // Populate G2 type (long) blocks
@@ -169,14 +154,14 @@ public static class QRCodeGenerator {
             var ECCBlock = galoisField.Encode(range);
 
             // Loop over just the error correction blocks
-            Console.Write($"G2: ");
-            PrintHexa(range);
-            Console.Write(" | ECC: ");
+            //Console.Write($"G2: ");
+            //PrintHexa(range);
+            //Console.Write(" | ECC: ");
             for(int c = 0; c < grouping.ECCodewordsPerBlock; c++) {
-                Console.Write($"{Convert.ToString(ECCBlock[grouping.codewordsInG2 + c], 16).PadLeft(2, '0').ToUpper()} ");
+                //Console.Write($"{Convert.ToString(ECCBlock[grouping.codewordsInG2 + c], 16).PadLeft(2, '0').ToUpper()} ");
                 ECCBlocks[(grouping.G1Count + i) * grouping.ECCodewordsPerBlock + c] = ECCBlock[grouping.codewordsInG2 + c];
             }
-            Console.WriteLine();
+            //Console.WriteLine();
         }
 
         var result = new byte[dataBlocks.Length + ECCBlocks.Length];
@@ -206,12 +191,12 @@ public static class QRCodeGenerator {
             }
         }
 
-        for(int i = 0; i < result.Length; i++) {
-            if(i < dataBlocks.Length) Console.BackgroundColor = ConsoleColor.DarkGreen;
-            else Console.BackgroundColor = ConsoleColor.DarkMagenta;
-            Console.Write($"{Convert.ToString(result[i], 16).PadLeft(2, '0').ToUpper()} ");
-        }
-        Console.WriteLine();
+        //for(int i = 0; i < result.Length; i++) {
+        //    if(i < dataBlocks.Length) Console.BackgroundColor = ConsoleColor.DarkGreen;
+        //    else Console.BackgroundColor = ConsoleColor.DarkMagenta;
+        //    Console.Write($"{Convert.ToString(result[i], 16).PadLeft(2, '0').ToUpper()} ");
+        //}
+        //Console.WriteLine();
 
         version += 1;
         return Generate(result, version, errorCorrectionLevel);
@@ -245,16 +230,41 @@ public static class QRCodeGenerator {
     }
 
 
-    static int DetermineFittingVersion(QREncodedMessage message, int minimum) {
-        var minBlocks = Math.Ceiling(message.bitsArray.Length * 1.0f / 8);
+    static int DetermineFittingVersion(QREncodedMessage message, int minimum, DataType type) {
+        var minBlocks = (int)Math.Ceiling(message.bitsArray.Length * 1.0f / 8);
         for(int i = minimum; i <= 40; i++) {
-            if(blocksInfo[i - 1][ECCLevel].TotalDataBlocks >= minBlocks) {
+            int addedLength = (int)Math.Ceiling((4 + GetNumberOfLengthBits(i - 1, type) * 1.0f) / 8);
+            if(blocksInfo[i - 1][ECCLevel].TotalDataBlocks >= minBlocks + addedLength) {
                 version = i;
                 return version;
             }
         }
 
         throw new Exception("There is no QR version that this message can fit into");
+    }
+
+    static int GetNumberOfLengthBits(int version, DataType type) {
+        int nrOfLengthBits = 0;
+        switch(type) {
+            case DataType.Numeric:
+                if(version < 9) nrOfLengthBits = 10;
+                else if(version < 26) nrOfLengthBits = 12;
+                else nrOfLengthBits = 14;
+                break;
+            case DataType.Alphanumeric:
+                if(version < 9) nrOfLengthBits = 9;
+                else if(version < 26) nrOfLengthBits = 11;
+                else nrOfLengthBits = 13;
+                break;
+            case DataType.Byte:
+                if(version < 9) nrOfLengthBits = 8;
+                else if(version < 26) nrOfLengthBits = 16;
+                else nrOfLengthBits = 16;
+                break;
+            default:
+                throw new Exception("Kanji not supported");
+        }
+        return nrOfLengthBits;
     }
 
     static void AppendBits(List<byte> bits, int nr, int nrOfBits) {
@@ -287,7 +297,7 @@ public static class QRCodeGenerator {
             ApplyMask(i);
         }
         mask = bestMask;
-        PutMaskBits(ECCLevel, mask);
+        PutMaskBits(ECCLevel ^ 1, mask);
         ApplyMask(mask);
     }
     static void ApplyVersionBits() {
@@ -295,10 +305,12 @@ public static class QRCodeGenerator {
             return;
         }
         int ECCVersion = GetVersionBits(version);
-        for(int j = 0; j < 6; j++) {
+
+
+        for (int j = 0; j < 6; j++) {
             for(int i = 0; i < 3; i++) {
-                code[code.Length - 11 + i][j] = ECCVersion >> (17 - j * 3 + i) & 1;
-                code[j][code.Length - 11 + i] = ECCVersion >> (17  - j * 3 + i) & 1;
+                code[code.Length - 11 + (2-i)][5-j] = ECCVersion >> (17 - j * 3 - i) & 1;
+                code[5-j][code.Length - 11 + (2-i)] = ECCVersion >> (17  - j * 3 - i) & 1;
 
             }
         }
@@ -366,29 +378,33 @@ public static class QRCodeGenerator {
         }
     }
 
-    static void SetAllDataBlocks(byte[] TotalData) {
+    static void SetAllDataBlocks(byte[] totalData) {
+        var lengthened = new byte[totalData.Length + 1];
+        totalData.CopyTo(lengthened, 0);
+        lengthened[totalData.Length] = 0;
+
         int nr = 0;
         for(int j = code.Length - 1; j >= 1; j -= 2) {
             int nj = j - (j > 6 ? 1 : 2);
             if(j % 4 != 2) {
                 for(int i = code.Length - 1; i >= 0; i--) {
                     if(IsData(i, nj + 1)) {
-                        code[i][nj + 1] = (TotalData[nr / 8] >> (7 - (nr % 8))) & 1;
+                        code[i][nj + 1] = (lengthened[nr / 8] >> (7 - (nr % 8))) & 1;
                         nr++;
                     }
                     if(IsData(i, nj)) {
-                        code[i][nj] = (TotalData[nr / 8] >> (7 - (nr % 8))) & 1;
+                        code[i][nj] = (lengthened[nr / 8] >> (7 - (nr % 8))) & 1;
                         nr++;
                     }
                 }
             } else {
                 for(int i = 0; i < code.Length; i++) {
                     if(IsData(i, nj + 1)) {
-                        code[i][nj + 1] = (TotalData[nr / 8] >> (7 - (nr % 8))) & 1;
+                        code[i][nj + 1] = (lengthened[nr / 8] >> (7 - (nr % 8))) & 1;
                         nr++;
                     }
                     if(IsData(i, nj)) {
-                        code[i][nj] = (TotalData[nr / 8] >> (7 - (nr % 8))) & 1;
+                        code[i][nj] = (lengthened[nr / 8] >> (7 - (nr % 8))) & 1;
                         nr++;
                     }
                 }
@@ -498,8 +514,8 @@ public static class QRCodeGenerator {
             }
         }
     }
-    static int GetVersionBits(int Version) { //TODO: FIX THIS FUNCTION
-        if(version < 7 || version > 40)
+    static int GetVersionBits(int Version) { 
+        if(Version < 7 || Version > 40)
             throw new Exception("Version is not good");
         int initnr = Version;
         Version <<= 12;
@@ -511,8 +527,8 @@ public static class QRCodeGenerator {
             }
             Version ^= gen;
             gen = initGen;
-        }
-        Version += initnr << 12;
+        }   
+        Version |= initnr << 12;
         return Version;
     }
 

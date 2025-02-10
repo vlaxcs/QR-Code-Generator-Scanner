@@ -50,12 +50,20 @@ public partial class QRCode {
             mask1 |= code[8][j + 1] << (14 - j);
         }
         mask1 |= code[7][8] << (14 - 8);
-        for (int i = 0; i <= 6; i++) mask2 |= code[code.Length - i - 1][8] << (14 - i);
-        for (int i = 0; i <= 7; i++) mask2 |= code[8][code.Length - 1 - i] << i;
-
+        for(int i = 0; i <= 5; i++) {
+            mask1 |= code[i][8] << (i);
+        }
+        for(int i = 0; i <= 6; i++) {
+            mask2 |= code[code.Length - i - 1][8] << (14 - i);
+        }
+        for(int j = 0; j <= 7; j++) {
+            mask2 |= code[8][code.Length - 1 - j] << j;
+        }
         mask1 = GetClosestDataEC(mask1);
         mask2 = GetClosestDataEC(mask2);
-        if(mask1 != mask2) throw new Exception("Mask bits dont match");
+        if(mask1 != mask2) {
+            throw new Exception("Mask bits dont match");
+        }
         maskUsed = (mask1 >> 10) & 7 ^ 5;
         ErrorCorrectionLevel = (mask1 >> 13) ^ 3;
 
@@ -65,17 +73,17 @@ public partial class QRCode {
 
 
     public void Print(bool masked = true) {
-        if (masked) ApplyMask(maskUsed);
+        if(masked) ApplyMask(maskUsed);
 
         Console.BackgroundColor = ConsoleColor.White;
         Console.WriteLine(new string(' ', code.Length * 2 + 4));
 
-        for (int i = 0; i < code.Length; i++) {
+        for(int i = 0; i < code.Length; i++) {
             Console.BackgroundColor = ConsoleColor.White;
             Console.Write("  ");
 
-            for (int j = 0; j < code.Length; j++) {
-                if (code[i][j] == 1) Console.BackgroundColor = ConsoleColor.Black;
+            for(int j = 0; j < code.Length; j++) {
+                if(code[i][j] == 1) Console.BackgroundColor = ConsoleColor.Black;
                 else Console.BackgroundColor = ConsoleColor.White;
                 Console.Write("  ");
                 Console.BackgroundColor = ConsoleColor.Black;
@@ -94,34 +102,34 @@ public partial class QRCode {
         Console.BackgroundColor = ConsoleColor.Black;
         Console.WriteLine("           ");
 
-        if (masked) ApplyMask(maskUsed);
+        if(masked) ApplyMask(maskUsed);
     }
     public int GetClosestDataEC(int DataEC) {
         int ans = 0;
         int dist = 15;
         int nrans = 0;
-        for (int i = 0; i <= 31; i++) {
+        for(int i = 0; i <= 31; i++) {
             int nr = 0;
             int ValidMask = GetMaskBits(i >> 3, i & 7);
-            for (int j = 0; j <= 31; j++)
-                if ((ValidMask & (1 << j)) != (DataEC & (1 << j))) nr++;
-               
-            if (nr < dist) {
+            for(int j = 0; j <= 31; j++)
+                if((ValidMask & (1 << j)) != (DataEC & (1 << j))) nr++;
+
+            if(nr < dist) {
                 dist = nr;
                 ans = ValidMask;
                 nrans = 1;
-            } else if (nr == dist) nrans++;
+            } else if(nr == dist) nrans++;
         }
 
         //TODO: IMPLEMENT SOMETHING FOR 2 CODES AT SAME DISTANCE:)
-        
+
         return ans;
     }
     public bool IsData(int x, int y) {
         int maxWidth = Utility.SizeForVersion(Version);
         int[] alligmentPoints = GetAlignmentPoints();
 
-        if ((x < 9 && y < 9)
+        if((x < 9 && y < 9)
             || ((x < 9 && y > maxWidth - 9))
             || ((x > maxWidth - 9 && y < 9))
             || (Version >= 7 && x < 7 && y > maxWidth - 12)
@@ -156,7 +164,7 @@ public partial class QRCode {
         for(int i = 0; i < code.Length; i++) {
             for(int j = 0; j < code.Length; j++) {
                 var val = code[i][j];
-                if(IsData(i, j) &&  masks[maskUsed](i, j)) val ^= 1;
+                if(IsData(i, j) && masks[maskUsed](i, j)) val ^= 1;
 
                 if(val == 0) continue;
 
@@ -172,6 +180,7 @@ public partial class QRCode {
 
         img.Save(filePath);
 
+        filePath = Path.GetFullPath(filePath);
         Console.WriteLine($"Image has been saved at {filePath}");
 
         var process = new Process();
@@ -197,23 +206,23 @@ public partial class QRCode {
             return result;
         }
         result[num - 1] = 4 * Version + 10;
-        
+
         if(num == 2) {
             for(int i = 0; i < num; i++) {
                 result[i] = Version * 4 + 16 - result[i];
             }
             return result;
         }
-        
+
         result[num - 2] = 2 * ((result[0] + result[num - 1] * (num - 2)) / ((num - 1) * 2));
-        
+
         if(num == 3) {
             for(int i = 0; i < num; i++) {
                 result[i] = Version * 4 + 16 - result[i];
             }
             return result;
         }
-        
+
         int step = result[num - 1] - result[num - 2];
         for(int i = num - 3; i > 0; i--) {
             result[i] = result[i + 1] - step;
@@ -238,12 +247,12 @@ public partial class QRCode {
                 ans[nr++] = AlignmentCoords[i]; ans[nr++] = AlignmentCoords[j];
             }
         }
-        
+
         return ans;
     }
     byte[] GetAllDataBlocks() {
         List<int> ans = new List<int>();
-        
+
         for(int j = code.Length - 1; j >= 1; j -= 2) {
             int nj = j - (j > 6 ? 1 : 2);
             if(j % 4 != 2) {
@@ -266,6 +275,7 @@ public partial class QRCode {
         }
 
         datatype = (DataType)((ans[0]) << 3 | ans[1] << 2 | ans[2] << 1 | ans[3]);
+
         return blocks;
     }
 
@@ -296,7 +306,7 @@ public partial class QRCode {
         }
         int ECCLevel = ErrorCorrectionLevel ^ 1;
         int maskBits = GetMaskBits(ECCLevel, mask);
-        
+
         for(int j = 0; j <= 5; j++) {
             code[8][j] = (maskBits >> (14 - j)) & 1;
         }
