@@ -1,4 +1,6 @@
-﻿public static class QRCodeGenerator {
+﻿using System.Linq;
+
+public static class QRCodeGenerator {
     static int[][] code;
     static int version;
     static int ECCLevel;
@@ -14,90 +16,71 @@
         (i, j) => (i * j % 2 + i * j % 3) % 2 == 0,     // Mask 6
         (i, j) => ((i + j) % 2 + i * j % 3) % 2 == 0    // Mask 7
     };
-    static int[][] nrOfDataBlocks = {
-        new int[] { 19, 16, 13, 9 },
-        new int[] { 34, 28, 22, 16 },
-        new int[] { 55, 44, 34, 26 },
-        new int[] { 80, 64, 48, 36 },
-        new int[] { 108, 86, 62, 46 },
-        new int[] { 136, 108, 76, 60 },
-        new int[] { 156, 124, 88, 66 },
-        new int[] { 194, 154, 110, 86 },
-        new int[] { 232, 182, 132, 100 },
-        new int[] { 274, 216, 154, 122 },
-        new int[] { 324, 254, 180, 140 },
-        new int[] { 370, 290, 206, 158 },
-        new int[] { 428, 334, 244, 180 },
-        new int[] { 461, 365, 261, 197 },
-        new int[] { 523, 415, 295, 223 },
-        new int[] { 589, 453, 325, 253 },
-        new int[] { 647, 507, 367, 283 },
-        new int[] { 721, 563, 397, 313 },
-        new int[] { 795, 627, 445, 341 },
-        new int[] { 861, 669, 485, 385 },
-        new int[] { 932, 714, 512, 406 },
-        new int[] { 1006, 782, 568, 442 },
-        new int[] { 1094, 860, 614, 464 },
-        new int[] { 1174, 914, 664, 514 },
-        new int[] { 1276, 1000, 718, 538 },
-        new int[] { 1370, 1062, 754, 596 },
-        new int[] { 1468, 1128, 808, 628 },
-        new int[] { 1531, 1193, 871, 661 },
-        new int[] { 1631, 1267, 911, 701 },
-        new int[] { 1735, 1373, 985, 745 },
-        new int[] { 1843, 1455, 1033, 793 },
-        new int[] { 1955, 1541, 1115, 845 },
-        new int[] { 2071, 1631, 1171, 901 },
-        new int[] { 2191, 1725, 1231, 961 },
-        new int[] { 2306, 1812, 1286, 986 },
-        new int[] { 2434, 1914, 1354, 1054 },
-        new int[] { 2566, 1992, 1426, 1096 },
-        new int[] { 2702, 2102, 1502, 1142 },
-        new int[] { 2812, 2216, 1582, 1222 },
-        new int[] { 2956, 2334, 1666, 1276 }
+
+    // https://www.thonky.com/qr-code-tutorial/error-correction-table
+    static ECCGrouping[][] blocksInfo = {
+        new ECCGrouping[]{ new ECCGrouping(7, 1, 19, 0, 0), new ECCGrouping(10, 1, 16, 0, 0), new ECCGrouping(13, 1, 13, 0, 0), new ECCGrouping(17, 1, 9, 0, 0)},
+        new ECCGrouping[]{ new ECCGrouping(10, 1, 34, 0, 0), new ECCGrouping(16, 1, 28, 0, 0), new ECCGrouping(22, 1, 22, 0, 0), new ECCGrouping(28, 1, 16, 0, 0)},
+        new ECCGrouping[]{ new ECCGrouping(15, 1, 55, 0, 0), new ECCGrouping(26, 1, 44, 0, 0), new ECCGrouping(18, 2, 17, 0, 0), new ECCGrouping(22, 2, 13, 0, 0)},
+        new ECCGrouping[]{ new ECCGrouping(20, 1, 80, 0, 0), new ECCGrouping(18, 2, 32, 0, 0), new ECCGrouping(26, 2, 24, 0, 0), new ECCGrouping(16, 4, 9, 0, 0)},
+        new ECCGrouping[]{ new ECCGrouping(26, 1, 108, 0, 0), new ECCGrouping(24, 2, 43, 0, 0), new ECCGrouping(18, 2, 15, 2, 16), new ECCGrouping(22, 2, 11, 2, 12)},
+        new ECCGrouping[]{ new ECCGrouping(18, 2, 68, 0, 0), new ECCGrouping(16, 4, 27, 0, 0), new ECCGrouping(24, 4, 19, 0, 0), new ECCGrouping(28, 4, 15, 0, 0)},
+        new ECCGrouping[]{ new ECCGrouping(20, 2, 78, 0, 0), new ECCGrouping(18, 4, 31, 0, 0), new ECCGrouping(18, 2, 14, 4, 15), new ECCGrouping(26, 4, 13, 1, 14)},
+        new ECCGrouping[]{ new ECCGrouping(24, 2, 97, 0, 0), new ECCGrouping(22, 2, 38, 2, 39), new ECCGrouping(22, 4, 18, 2, 19), new ECCGrouping(26, 4, 14, 2, 15)},
+        new ECCGrouping[]{ new ECCGrouping(30, 2, 116, 0, 0), new ECCGrouping(22, 3, 36, 2, 37), new ECCGrouping(20, 4, 16, 4, 17), new ECCGrouping(24, 4, 12, 4, 13)},
+        new ECCGrouping[]{ new ECCGrouping(18, 2, 68, 2, 69), new ECCGrouping(26, 4, 43, 1, 44), new ECCGrouping(24, 6, 19, 2, 20), new ECCGrouping(28, 6, 15, 2, 16)},
+        new ECCGrouping[]{ new ECCGrouping(20, 4, 81, 0, 0), new ECCGrouping(30, 1, 50, 4, 51), new ECCGrouping(28, 4, 22, 4, 23), new ECCGrouping(24, 3, 12, 8, 13)},
+        new ECCGrouping[]{ new ECCGrouping(24, 2, 92, 2, 93), new ECCGrouping(22, 6, 36, 2, 37), new ECCGrouping(26, 4, 20, 6, 21), new ECCGrouping(28, 7, 14, 4, 15)},
+        new ECCGrouping[]{ new ECCGrouping(26, 4, 107, 0, 0), new ECCGrouping(22, 8, 37, 1, 38), new ECCGrouping(24, 8, 20, 4, 21), new ECCGrouping(22, 12, 11, 4, 12)},
+        new ECCGrouping[]{ new ECCGrouping(30, 3, 115, 1, 116), new ECCGrouping(24, 4, 40, 5, 41), new ECCGrouping(20, 11, 16, 5, 17), new ECCGrouping(24, 11, 12, 5, 13)},
+        new ECCGrouping[]{ new ECCGrouping(22, 5, 87, 1, 88), new ECCGrouping(24, 5, 41, 5, 42), new ECCGrouping(30, 5, 24, 7, 25), new ECCGrouping(24, 11, 12, 7, 13)},
+        new ECCGrouping[]{ new ECCGrouping(24, 5, 98, 1, 99), new ECCGrouping(28, 7, 45, 3, 46), new ECCGrouping(24, 15, 19, 2, 20), new ECCGrouping(30, 3, 15, 13, 16)},
+        new ECCGrouping[]{ new ECCGrouping(28, 1, 107, 5, 108), new ECCGrouping(28, 10, 46, 1, 47), new ECCGrouping(28, 1, 22, 15, 23), new ECCGrouping(28, 2, 14, 17, 15)},
+        new ECCGrouping[]{ new ECCGrouping(30, 5, 120, 1, 121), new ECCGrouping(26, 9, 43, 4, 44), new ECCGrouping(28, 17, 22, 1, 23), new ECCGrouping(28, 2, 14, 19, 15)},
+        new ECCGrouping[]{ new ECCGrouping(28, 3, 113, 4, 114), new ECCGrouping(26, 3, 44, 11, 45), new ECCGrouping(26, 17, 21, 4, 22), new ECCGrouping(26, 9, 13, 16, 14)},
+        new ECCGrouping[]{ new ECCGrouping(28, 3, 107, 5, 108), new ECCGrouping(26, 3, 41, 13, 42), new ECCGrouping(30, 15, 24, 5, 25), new ECCGrouping(28, 15, 15, 10, 16)},
+        new ECCGrouping[]{ new ECCGrouping(28, 4, 116, 4, 117), new ECCGrouping(26, 17, 42, 0, 0), new ECCGrouping(28, 17, 22, 6, 23), new ECCGrouping(30, 19, 16, 6, 17)},
+        new ECCGrouping[]{ new ECCGrouping(28, 2, 111, 7, 112), new ECCGrouping(28, 17, 46, 0, 0), new ECCGrouping(30, 7, 24, 16, 25), new ECCGrouping(24, 34, 13, 0, 0)},
+        new ECCGrouping[]{ new ECCGrouping(30, 4, 121, 5, 122), new ECCGrouping(28, 4, 47, 14, 48), new ECCGrouping(30, 11, 24, 14, 25), new ECCGrouping(30, 16, 15, 14, 16)},
+        new ECCGrouping[]{ new ECCGrouping(30, 6, 117, 4, 118), new ECCGrouping(28, 6, 45, 14, 46), new ECCGrouping(30, 11, 24, 16, 25), new ECCGrouping(30, 30, 16, 2, 17)},
+        new ECCGrouping[]{ new ECCGrouping(26, 8, 106, 4, 107), new ECCGrouping(28, 8, 47, 13, 48), new ECCGrouping(30, 7, 24, 22, 25), new ECCGrouping(30, 22, 15, 13, 16)},
+        new ECCGrouping[]{ new ECCGrouping(28, 10, 114, 2, 115), new ECCGrouping(28, 19, 46, 4, 47), new ECCGrouping(28, 28, 22, 6, 23), new ECCGrouping(30, 33, 16, 4, 17)},
+        new ECCGrouping[]{ new ECCGrouping(30, 8, 122, 4, 123), new ECCGrouping(28, 22, 45, 3, 46), new ECCGrouping(30, 8, 23, 26, 24), new ECCGrouping(30, 12, 15, 28, 16)},
+        new ECCGrouping[]{ new ECCGrouping(30, 3, 117, 10, 118), new ECCGrouping(28, 3, 45, 23, 46), new ECCGrouping(30, 4, 24, 31, 25), new ECCGrouping(30, 11, 15, 31, 16)},
+        new ECCGrouping[]{ new ECCGrouping(30, 7, 116, 7, 117), new ECCGrouping(28, 21, 45, 7, 46), new ECCGrouping(30, 1, 23, 37, 24), new ECCGrouping(30, 19, 15, 26, 16)},
+        new ECCGrouping[]{ new ECCGrouping(30, 5, 115, 10, 116), new ECCGrouping(28, 19, 47, 10, 48), new ECCGrouping(30, 15, 24, 25, 25), new ECCGrouping(30, 23, 15, 25, 16)},
+        new ECCGrouping[]{ new ECCGrouping(30, 13, 115, 3, 116), new ECCGrouping(28, 2, 46, 29, 47), new ECCGrouping(30, 42, 24, 1, 25), new ECCGrouping(30, 23, 15, 28, 16)},
+        new ECCGrouping[]{ new ECCGrouping(30, 17, 115, 0, 0), new ECCGrouping(28, 10, 46, 23, 47), new ECCGrouping(30, 10, 24, 35, 25), new ECCGrouping(30, 19, 15, 35, 16)},
+        new ECCGrouping[]{ new ECCGrouping(30, 17, 115, 1, 116), new ECCGrouping(28, 14, 46, 21, 47), new ECCGrouping(30, 29, 24, 19, 25), new ECCGrouping(30, 11, 15, 46, 16)},
+        new ECCGrouping[]{ new ECCGrouping(30, 13, 115, 6, 116), new ECCGrouping(28, 14, 46, 23, 47), new ECCGrouping(30, 44, 24, 7, 25), new ECCGrouping(30, 59, 16, 1, 17)},
+        new ECCGrouping[]{ new ECCGrouping(30, 12, 121, 7, 122), new ECCGrouping(28, 12, 47, 26, 48), new ECCGrouping(30, 39, 24, 14, 25), new ECCGrouping(30, 22, 15, 41, 16)},
+        new ECCGrouping[]{ new ECCGrouping(30, 6, 121, 14, 122), new ECCGrouping(28, 6, 47, 34, 48), new ECCGrouping(30, 46, 24, 10, 25), new ECCGrouping(30, 2, 15, 64, 16)},
+        new ECCGrouping[]{ new ECCGrouping(30, 17, 122, 4, 123), new ECCGrouping(28, 29, 46, 14, 47), new ECCGrouping(30, 49, 24, 10, 25), new ECCGrouping(30, 24, 15, 46, 16)},
+        new ECCGrouping[]{ new ECCGrouping(30, 4, 122, 18, 123), new ECCGrouping(28, 13, 46, 32, 47), new ECCGrouping(30, 48, 24, 14, 25), new ECCGrouping(30, 42, 15, 32, 16)},
+        new ECCGrouping[]{ new ECCGrouping(30, 20, 117, 4, 118), new ECCGrouping(28, 40, 47, 7, 48), new ECCGrouping(30, 43, 24, 22, 25), new ECCGrouping(30, 10, 15, 67, 16)},
+        new ECCGrouping[]{ new ECCGrouping(30, 19, 118, 6, 119), new ECCGrouping(28, 18, 47, 31, 48), new ECCGrouping(30, 34, 24, 34, 25), new ECCGrouping(30, 20, 15, 61, 16)},
     };
-    static int[][] nrOfECBlocks = {
-        new int[]{7, 10, 13, 17},
-        new int[]{10, 16, 22, 28},
-        new int[]{15, 26, 36, 44},
-        new int[]{20, 36, 52, 64},
-        new int[]{26, 48, 72, 88},
-        new int[]{36, 64, 96, 112},
-        new int[]{40, 72, 108, 130},
-        new int[]{48, 88, 132, 156},
-        new int[]{60, 110, 160, 192},
-        new int[]{72, 130, 192, 224},
-        new int[]{80, 150, 224, 264},
-        new int[]{96, 176, 260, 308},
-        new int[]{104, 198, 288, 352},
-        new int[]{120, 216, 320, 384},
-        new int[]{132, 240, 360, 432},
-        new int[]{144, 280, 408, 480},
-        new int[]{168, 308, 448, 532},
-        new int[]{180, 338, 504, 588},
-        new int[]{196, 364, 546, 650},
-        new int[]{224, 416, 600, 700},
-        new int[]{224, 442, 644, 750},
-        new int[]{252, 476, 690, 816},
-        new int[]{270, 504, 750, 900},
-        new int[]{300, 560, 810, 960},
-        new int[]{312, 588, 870, 1050},
-        new int[]{336, 644, 952, 1110},
-        new int[]{360, 700, 1020, 1200},
-        new int[]{390, 728, 1050, 1260},
-        new int[]{420, 784, 1140, 1350},
-        new int[]{450, 812, 1200, 1440},
-        new int[]{480, 868, 1290, 1530},
-        new int[]{510, 924, 1350, 1620},
-        new int[]{540, 980, 1440, 1710},
-        new int[]{570, 1036, 1530, 1800},
-        new int[]{570, 1064, 1590, 1890},
-        new int[]{600, 1120, 1680, 1980},
-        new int[]{630, 1204, 1770, 2100},
-        new int[]{660, 1260, 1860, 2220},
-        new int[]{720, 1316, 1950, 2310},
-        new int[]{750, 1372, 2040, 2430}
-    };
+    struct ECCGrouping {
+        public int ECCodewordsPerBlock;
+        public int G1Count, codewordsInG1;
+        public int G2Count, codewordsInG2;
+
+        public int TotalDataBlocks => codewordsInG1 * G1Count + codewordsInG2 * G2Count;
+        public int TotalECCBlocks => ECCodewordsPerBlock * (G1Count + G2Count);
+        public int TotalBlocks => TotalDataBlocks + TotalECCBlocks;
+
+        public ECCGrouping(int ECCodewordsPerBlock, int G1Count, int codewordsInG1, int G2Count, int codewordsInG2) {
+            this.ECCodewordsPerBlock = ECCodewordsPerBlock;
+            this.G1Count = G1Count;
+            this.codewordsInG1 = codewordsInG1;
+            this.G2Count = G2Count;
+            this.codewordsInG2 = codewordsInG2;
+        }
+
+        public override string ToString() {
+            return $"{ECCodewordsPerBlock} {G1Count} {codewordsInG1} {G2Count} {codewordsInG2}";
+        }
+    }
 
     public static QRCode Generate(string message, int errorCorrectionLevel = 1, int minVersion = 1, DataType? type = null) {
         // Find the optimal dataType or use the one passed in
@@ -123,43 +106,122 @@
         }
 
         version = DetermineFittingVersion(encodedMessage, minVersion) - 1;
-        List<byte> res = new List<byte>();
+        ECCLevel = errorCorrectionLevel;
 
-        AppendBits(res, (int)type.Value, 4);
-        AppendBits(res, encodedMessage.bitsArray.Length / 8, 10 - (int)Math.Log2((int)type * 2 + 1) + 1);
+        ECCGrouping grouping = blocksInfo[version][ECCLevel];
+
+        byte[] dataBlocks = new byte[grouping.TotalDataBlocks];
+        byte[] ECCBlocks = new byte[grouping.TotalECCBlocks];
+        var galoisField = new GaloisField(grouping.ECCodewordsPerBlock);
+
+
+        List<byte> bitConversion = new List<byte>();
+
+        AppendBits(bitConversion, (int)type.Value, 4);
+        AppendBits(bitConversion, encodedMessage.bitsArray.Length / 8, 10 - (int)Math.Log2((int)type * 2 + 1) + 1);
         for(int i = 0; i < encodedMessage.bitsArray.Length; i++) {
-            res.Add(encodedMessage[i]);
+            bitConversion.Add(encodedMessage[i]);
         }
 
-        var numberOfBlocks = nrOfDataBlocks[version][ECCLevel];
+        var numberOfBlocks = grouping.TotalDataBlocks;
         var numberOfBits = numberOfBlocks * 8;
-        while(res.Count < numberOfBits) {
-            res.Add(0);
-            if(res.Count % 8 == 0) break;
+        while(bitConversion.Count < numberOfBits) {
+            bitConversion.Add(0);
+            if(bitConversion.Count % 8 == 0) break;
         }
 
         // Transform bits to bytes
-        for(int i = 0; i < res.Count / 8; i++) {
+        for(int i = 0; i < bitConversion.Count / 8; i++) {
+            dataBlocks[i] = bitConversion[i];
             for(int b = 0; b < 8; b++) {
-                res[i] <<= 1;
-                res[i] |= res[i * 8 + b];
+                dataBlocks[i] <<= 1;
+                dataBlocks[i] |= bitConversion[i * 8 + b];
             }
         }
 
-        res.RemoveRange(res.Count / 8, res.Count - res.Count / 8);
-
-        while(res.Count < numberOfBlocks) {
-            res.Add(0xEC);
-            if(res.Count >= numberOfBlocks) break;
-            res.Add(0x11);
+        bool alternateFiller = true; // Used to alternate between 0xEC and 0x11
+        for(int i = bitConversion.Count / 8; i < numberOfBlocks; i++) {
+            if(alternateFiller) dataBlocks[i] = 0xEC;
+            else dataBlocks[i] = 0x11;
+            alternateFiller = !alternateFiller;
         }
 
-        var galoisField = new GaloisField(nrOfECBlocks[version][ECCLevel]);
-        var finalRes = galoisField.Encode(res.ToArray()).ToList();
-        finalRes.Add(0);
-        
+        // Populate G1 type (short) blocks
+        for(int i = 0; i < grouping.G1Count; i++) {
+            var range = dataBlocks[(i * grouping.codewordsInG1)..((i + 1) * grouping.codewordsInG1)];
+            var ECCBlock = galoisField.Encode(range);
+
+            // Loop over just the error correction blocks
+            Console.Write($"G1: ");
+            PrintHexa(range);
+            Console.Write(" | ECC: ");
+            for(int c = 0; c < grouping.ECCodewordsPerBlock; c++) {
+                Console.Write($"{Convert.ToString(ECCBlock[grouping.codewordsInG1 + c], 16).PadLeft(2, '0').ToUpper()} ");
+                ECCBlocks[i * grouping.ECCodewordsPerBlock + c] = ECCBlock[grouping.codewordsInG1 + c];
+            }
+            Console.WriteLine();
+        }
+
+        // Populate G2 type (long) blocks
+        int G2Offset = grouping.G1Count * grouping.codewordsInG1;
+        for(int i = 0; i < grouping.G2Count; i++) {
+            var range = dataBlocks[(G2Offset + i * grouping.codewordsInG2)..(G2Offset + (i + 1) * grouping.codewordsInG2)];
+            var ECCBlock = galoisField.Encode(range);
+
+            // Loop over just the error correction blocks
+            Console.Write($"G2: ");
+            PrintHexa(range);
+            Console.Write(" | ECC: ");
+            for(int c = 0; c < grouping.ECCodewordsPerBlock; c++) {
+                Console.Write($"{Convert.ToString(ECCBlock[grouping.codewordsInG2 + c], 16).PadLeft(2, '0').ToUpper()} ");
+                ECCBlocks[(grouping.G1Count + i) * grouping.ECCodewordsPerBlock + c] = ECCBlock[grouping.codewordsInG2 + c];
+            }
+            Console.WriteLine();
+        }
+
+        var result = new byte[dataBlocks.Length + ECCBlocks.Length];
+        var totalGroupings = grouping.G1Count + grouping.G2Count;
+        // Interweave G1 and G2, first G1 length:
+        int crntIndex = 0;
+        for(int i = 0; i < grouping.codewordsInG1; i++) {
+            for(int j = 0; j < totalGroupings; j++) {
+                if(j < grouping.G1Count) {
+                    result[crntIndex++] = dataBlocks[j * grouping.codewordsInG1 + i];
+                } else {
+                    result[crntIndex++] = dataBlocks[G2Offset + (j - grouping.G1Count) * grouping.codewordsInG2 + i];
+                }
+            }
+        }
+        // Put the rest of G2s
+        for(int i = grouping.codewordsInG1; i < grouping.codewordsInG2; i++) {
+            for(int j = 0; j < grouping.G2Count; j++) {
+                result[crntIndex++] = dataBlocks[G2Offset + j * grouping.codewordsInG2 + i];
+            }
+        }
+
+        // Interweave ECC Blocks
+        for(int i = 0; i < grouping.ECCodewordsPerBlock; i++) {
+            for(int j = 0; j < totalGroupings; j++) {
+                result[crntIndex++] = ECCBlocks[j * grouping.ECCodewordsPerBlock + i];
+            }
+        }
+
+        for(int i = 0; i < result.Length; i++) {
+            if(i < dataBlocks.Length) Console.BackgroundColor = ConsoleColor.DarkGreen;
+            else Console.BackgroundColor = ConsoleColor.DarkMagenta;
+            Console.Write($"{Convert.ToString(result[i], 16).PadLeft(2, '0').ToUpper()} ");
+        }
+        Console.WriteLine();
+
         version += 1;
-        return Generate(finalRes.ToArray(), version, errorCorrectionLevel);
+        return Generate(result, version, errorCorrectionLevel);
+    }
+
+    // FOR DEBUG, REMOVE THIS IF YOU SEE IT
+    static void PrintHexa(byte[] arr) {
+        for(int i = 0; i < arr.Length; i++) {
+            Console.Write($"{Convert.ToString(arr[i], 16).PadLeft(2, '0').ToUpper()} ");
+        }
     }
 
     static QRCode Generate(byte[] dataBlocks, int qrVersion, int errorCorrectionLevel) {
@@ -184,9 +246,9 @@
 
 
     static int DetermineFittingVersion(QREncodedMessage message, int minimum) {
-        var minBlocks = Math.Ceiling(message.bitsArray.Length * 1.0 / 8);
+        var minBlocks = Math.Ceiling(message.bitsArray.Length * 1.0f / 8);
         for(int i = minimum; i <= 40; i++) {
-            if(nrOfDataBlocks[i - 1][ECCLevel] >= minBlocks) {
+            if(blocksInfo[i - 1][ECCLevel].TotalDataBlocks >= minBlocks) {
                 version = i;
                 return version;
             }
@@ -215,7 +277,7 @@
         int MinScore = 999999999;
         int bestMask = -1;
         for(int i = 0; i <= 7; i++) {
-            PutMaskBits(ECCLevel ^ 1, i);
+            PutMaskBits(ECCLevel, i);
             ApplyMask(i);
             int penaltyScore = CalculatePenaltyScore();
             if(penaltyScore < MinScore) {
@@ -225,7 +287,7 @@
             ApplyMask(i);
         }
         mask = bestMask;
-        PutMaskBits(ECCLevel ^ 1, mask);
+        PutMaskBits(ECCLevel, mask);
         ApplyMask(mask);
     }
     static void ApplyVersionBits() {

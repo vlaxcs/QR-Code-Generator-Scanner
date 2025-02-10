@@ -1,4 +1,4 @@
-﻿var qr = QRCodeGenerator.Generate("I love fortnite, I love fortnite, I love fortnite, I love fortnite");
+﻿var qr = QRCodeGenerator.Generate("Donec scelerisque quam ut arcu maximus pharetra. Praesent tempor ligula non laoreet.", 2, 9);
 
 qr.Print();
 
