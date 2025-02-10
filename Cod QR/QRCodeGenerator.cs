@@ -119,7 +119,30 @@ public static class QRCodeGenerator {
         List<byte> bitConversion = new List<byte>();
 
         AppendBits(bitConversion, (int)type.Value, 4);
-        AppendBits(bitConversion, encodedMessage.bitsArray.Length / 8, 10 - (int)Math.Log2((int)type * 2 + 1) + 1);
+
+        int nrOfLengthBits = 0;
+        switch(type) {
+            case DataType.Numeric:
+                if(version < 9) nrOfLengthBits = 10;
+                else if(version < 26) nrOfLengthBits = 12;
+                else nrOfLengthBits = 14;
+                break;
+            case DataType.Alphanumeric:
+                if(version < 9) nrOfLengthBits = 9;
+                else if(version < 26) nrOfLengthBits = 11;
+                else nrOfLengthBits = 13;
+                break;
+            case DataType.Byte:
+                if(version < 9) nrOfLengthBits = 8;
+                else if(version < 26) nrOfLengthBits = 16;
+                else nrOfLengthBits = 16;
+                break;
+            default:
+                throw new Exception("Kanji not supported");
+                break;
+        }
+
+        AppendBits(bitConversion, encodedMessage.bitsArray.Length / 8, nrOfLengthBits);
         for(int i = 0; i < encodedMessage.bitsArray.Length; i++) {
             bitConversion.Add(encodedMessage[i]);
         }
@@ -369,29 +392,33 @@ public static class QRCodeGenerator {
         }
     }
 
-    static void SetAllDataBlocks(byte[] TotalData) {
+    static void SetAllDataBlocks(byte[] totalData) {
+        var lengthened = new byte[totalData.Length + 1];
+        totalData.CopyTo(lengthened, 0);
+        lengthened[totalData.Length] = 0;
+
         int nr = 0;
         for(int j = code.Length - 1; j >= 1; j -= 2) {
             int nj = j - (j > 6 ? 1 : 2);
             if(j % 4 != 2) {
                 for(int i = code.Length - 1; i >= 0; i--) {
                     if(IsData(i, nj + 1)) {
-                        code[i][nj + 1] = (TotalData[nr / 8] >> (7 - (nr % 8))) & 1;
+                        code[i][nj + 1] = (lengthened[nr / 8] >> (7 - (nr % 8))) & 1;
                         nr++;
                     }
                     if(IsData(i, nj)) {
-                        code[i][nj] = (TotalData[nr / 8] >> (7 - (nr % 8))) & 1;
+                        code[i][nj] = (lengthened[nr / 8] >> (7 - (nr % 8))) & 1;
                         nr++;
                     }
                 }
             } else {
                 for(int i = 0; i < code.Length; i++) {
                     if(IsData(i, nj + 1)) {
-                        code[i][nj + 1] = (TotalData[nr / 8] >> (7 - (nr % 8))) & 1;
+                        code[i][nj + 1] = (lengthened[nr / 8] >> (7 - (nr % 8))) & 1;
                         nr++;
                     }
                     if(IsData(i, nj)) {
-                        code[i][nj] = (TotalData[nr / 8] >> (7 - (nr % 8))) & 1;
+                        code[i][nj] = (lengthened[nr / 8] >> (7 - (nr % 8))) & 1;
                         nr++;
                     }
                 }

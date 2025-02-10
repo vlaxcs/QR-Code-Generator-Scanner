@@ -1,8 +1,13 @@
-﻿var qr = QRCodeGenerator.Generate("Donec scelerisque quam ut arcu maximus pharetra. Praesent tempor ligula non laoreet.", 2, 30);
+﻿
+for(int v = 1; v <= 40; v++) {
+    for(int e = 0; e < 4; e++) {
+        var qr = QRCodeGenerator.Generate("Donec scelerisque quam ut arcu maximus pharetra. Praesent tempor ligula non laoreet.", e, v);
 
-qr.Print();
+        qr.Print();
 
-qr.SaveToFile(@"C:\Users\stefa\Desktop\test.png");
+        qr.SaveToFile(@$"C:\Dalv\TEST\V{v}E{e}.png");
+    }
+}
 
 
 
