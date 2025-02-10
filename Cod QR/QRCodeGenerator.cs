@@ -106,8 +106,8 @@ public static class QRCodeGenerator {
             encodedMessage = MessageEncoder.EncodeMessage(type.Value, message);
         }
 
-        version = DetermineFittingVersion(encodedMessage, minVersion) - 1;
         ECCLevel = errorCorrectionLevel;
+        version = DetermineFittingVersion(encodedMessage, minVersion, type.Value) - 1;
 
         ECCGrouping grouping = blocksInfo[version][ECCLevel];
 
@@ -120,27 +120,7 @@ public static class QRCodeGenerator {
 
         AppendBits(bitConversion, (int)type.Value, 4);
 
-        int nrOfLengthBits = 0;
-        switch(type) {
-            case DataType.Numeric:
-                if(version < 9) nrOfLengthBits = 10;
-                else if(version < 26) nrOfLengthBits = 12;
-                else nrOfLengthBits = 14;
-                break;
-            case DataType.Alphanumeric:
-                if(version < 9) nrOfLengthBits = 9;
-                else if(version < 26) nrOfLengthBits = 11;
-                else nrOfLengthBits = 13;
-                break;
-            case DataType.Byte:
-                if(version < 9) nrOfLengthBits = 8;
-                else if(version < 26) nrOfLengthBits = 16;
-                else nrOfLengthBits = 16;
-                break;
-            default:
-                throw new Exception("Kanji not supported");
-                break;
-        }
+        int nrOfLengthBits = GetNumberOfLengthBits(version, type.Value);
 
         AppendBits(bitConversion, encodedMessage.bitsArray.Length / 8, nrOfLengthBits);
         for(int i = 0; i < encodedMessage.bitsArray.Length; i++) {
@@ -269,16 +249,41 @@ public static class QRCodeGenerator {
     }
 
 
-    static int DetermineFittingVersion(QREncodedMessage message, int minimum) {
-        var minBlocks = Math.Ceiling(message.bitsArray.Length * 1.0f / 8);
+    static int DetermineFittingVersion(QREncodedMessage message, int minimum, DataType type) {
+        var minBlocks = (int)Math.Ceiling(message.bitsArray.Length * 1.0f / 8);
         for(int i = minimum; i <= 40; i++) {
-            if(blocksInfo[i - 1][ECCLevel].TotalDataBlocks >= minBlocks) {
+            int addedLength = (int)Math.Ceiling((4 + GetNumberOfLengthBits(i - 1, type) * 1.0f) / 8);
+            if(blocksInfo[i - 1][ECCLevel].TotalDataBlocks >= minBlocks + addedLength) {
                 version = i;
                 return version;
             }
         }
 
         throw new Exception("There is no QR version that this message can fit into");
+    }
+
+    static int GetNumberOfLengthBits(int version, DataType type) {
+        int nrOfLengthBits = 0;
+        switch(type) {
+            case DataType.Numeric:
+                if(version < 9) nrOfLengthBits = 10;
+                else if(version < 26) nrOfLengthBits = 12;
+                else nrOfLengthBits = 14;
+                break;
+            case DataType.Alphanumeric:
+                if(version < 9) nrOfLengthBits = 9;
+                else if(version < 26) nrOfLengthBits = 11;
+                else nrOfLengthBits = 13;
+                break;
+            case DataType.Byte:
+                if(version < 9) nrOfLengthBits = 8;
+                else if(version < 26) nrOfLengthBits = 16;
+                else nrOfLengthBits = 16;
+                break;
+            default:
+                throw new Exception("Kanji not supported");
+        }
+        return nrOfLengthBits;
     }
 
     static void AppendBits(List<byte> bits, int nr, int nrOfBits) {

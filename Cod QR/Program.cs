@@ -1,11 +1,13 @@
 ﻿
 for(int v = 1; v <= 40; v++) {
     for(int e = 0; e < 4; e++) {
-        var qr = QRCodeGenerator.Generate("Donec scelerisque quam ut arcu maximus pharetra. Praesent tempor ligula non laoreet.", e, v);
+        Console.WriteLine($"Testing V{v} E{e}");
+        var qr = QRCodeGenerator.Generate("PROJECT NAYUKI 3141592653589", e, v);
 
-        qr.Print();
+        //qr.Print();
 
-        qr.SaveToFile(@$"C:\Dalv\TEST\V{v}E{e}.png");
+        qr.SaveToFile(@$"C:\Dalv\TEST\V{v}E{e}.png", 15);
+        Console.WriteLine();
     }
 }
 
