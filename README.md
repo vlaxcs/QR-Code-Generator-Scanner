@@ -121,7 +121,7 @@ Fiecare funcție respectă formatul impus de tipul de encodare, fragmentând și
 - Alphanumeric: Encodează câte 2 caractere pe 10 biți
 - Byte: Encodează câte un caracter pe 8 biți
 
-Toate encoderele returneaza un `QREncodedMessage` care contine sirul de biti de mesaj.
+Toate aceste funcții de encode furnizează un `QREncodedMessage`, care conține șirul de biți care constituie mesajul final.
 
 ### Corectitudinea datelor
 
@@ -135,8 +135,8 @@ Se grupează blocurile de data în short și long blocuri (conform [acestei tabe
 
 ### Date de ieșire
 - Un fișier PNG care conține codul QR generat
-- Versiune Folosita
-- Nivelul de error correction folosit
+- Versiune folosită
+- Nivelul de error correction folosit (0 - Low, 1 - Medium, 2 - Quartile, 3 - High)
 
 ## Colaboratori
 [Vlad MINCIUNESCU](https://github.com/vlaxcs)<br>
