@@ -55,7 +55,7 @@ var code = QRCodeImageParser.Parse(@"filepath");
 ### 🧙 Corectitudinea datelor
 
 - Blocurile de error correction
-    - Se grupează blocurile de data în short și long blocuri (conform [acestei tabele](https://www.thonky.com/qr-code-tutorial/error-correction-table)) pentru a sparge mesajul în chunk-uri care să fie trimise către funcția `decode` din clasa `Galois Field`, alături de parametrul `nsym` - numărul de blocuri de erorr correction care trebuie generate.
+    - Se grupează blocurile de date în short și long blocuri (conform [acestei tabele](https://www.thonky.com/qr-code-tutorial/error-correction-table)) pentru a sparge mesajul în chunk-uri care să fie trimise către funcția `decode` din clasa `Galois Field`, alături de parametrul `nsym` - numărul de blocuri de erorr correction care trebuie verificate.
 
     - Fiecare funcție respectă formatul impus de tipul de encodare, fragmentând șirul de biți astfel:
         - Numeric: Encodează câte 3 cifre pe 11 biți
