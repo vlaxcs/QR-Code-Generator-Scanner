@@ -46,7 +46,7 @@ function Generator({}: GeneratorProps) {
   };
 
 
-  const {imageUrl, usedVersion, usedEccLevel, loading, error, generate } = useGenerateImage();
+  const {imageUrl, usedVersion, usedEccLevel, error, generate } = useGenerateImage();
   const handleSubmit = () => {
     const textarea = textareaRef.current;
     if (!textarea) return;

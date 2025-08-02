@@ -6,7 +6,7 @@ import type { ScanResponse } from "~/api/scanImage/types";
 
 function Scanner() {
   const [result, setResult] = useState<ScanResponse | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const eccLevels = ["L", "M", "Q", "H"];

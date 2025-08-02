@@ -38,6 +38,6 @@ export function useGenerateImage() {
     usedEccLevel,
     loading,
     error,
-    generate,
+    generate
   };
 }
