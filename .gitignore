@@ -1,3 +1,5 @@
 /Cod QR/bin/*
 /Cod QR/obj/*
 /.vs/*
+/service-frontend
+/.editorconfig

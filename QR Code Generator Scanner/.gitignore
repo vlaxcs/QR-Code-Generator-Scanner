@@ -1,0 +1,17 @@
+# Build and IDE folders
+bin/
+obj/
+.vs/
+*.user
+*.suo
+
+# Logs and temp files
+*.log
+*.tmp
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Secrets
+.env
