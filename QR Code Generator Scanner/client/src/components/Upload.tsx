@@ -56,7 +56,7 @@ export default function Upload({ onResult, onLoading, onError }: UploadProps) {
         <>
         <div className="relative top-20 lg:top-20 w-full mx-auto flex justify-center items-center flex-col">
             <div
-                className="relative w-full max-w-[20rem] lg:max-w-lg rounded-2xl bg-black bg-cover bg-no-repeat bg-center aspect-square transition-all duration-300 ease-in-out"
+                className="relative w-full max-w-[10rem] lg:max-w-lg rounded-2xl bg-black bg-cover bg-no-repeat bg-center aspect-square transition-all duration-300 ease-in-out"
                 style={{
                 backgroundImage: imageUrl ? `url(${imageUrl})` : 'none',
             }}

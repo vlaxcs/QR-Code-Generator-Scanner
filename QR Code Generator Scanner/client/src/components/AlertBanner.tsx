@@ -20,8 +20,8 @@ function AlertBanner({ message, error }: { message?: string; error?: string }) {
           ${error ? 'bg-amber-400 text-black' : ''}
         `}
       >
-        {message && 'Success'}
-        {error && `${error}`}
+        {error ? `${error}`
+        : 'Success'}
       </div>
   );
 }

@@ -15,12 +15,23 @@ function Generator({}: GeneratorProps) {
     if (!textarea) return;
 
     textarea.style.height = "auto";
-    const maxHeight = 10 * 24;
+    const maxHeight = 5 * 24;
     textarea.style.height = Math.min(textarea.scrollHeight, maxHeight) + "px";
+  };
+
+  const reset = () => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    textarea.style.height = 40 + "px";
   };
 
   useEffect(() => {
     autoResize();
+  }, []);
+
+  useEffect(() =>{
+    reset();
   }, []);
 
   const [showErrorCorrectionMenu, setShowErrorCorrectionMenu] = useState(false);
@@ -45,6 +56,13 @@ function Generator({}: GeneratorProps) {
     "H": 3,
   };
 
+  const eccTableResponse: Record<string, string> = {
+    "0": "L",
+    "1": "M",
+    "2": "Q",
+    "3": "H",
+  };
+
 
   const {imageUrl, usedVersion, usedEccLevel, error, generate } = useGenerateImage();
   const handleSubmit = () => {
@@ -55,9 +73,9 @@ function Generator({}: GeneratorProps) {
       reqVersion: version,
       reqEccLevel: eccTable[errorCorrectionLevel]
     });
-    
-    console.log(usedEccLevel, usedVersion, error);
+  
     textarea.value = "";
+    reset();
   }
 
   return (
@@ -88,7 +106,7 @@ function Generator({}: GeneratorProps) {
       <>
       <div className="relative top-20 lg:top-20 w-full mx-auto flex justify-center items-center flex-col">
             <div
-                className="relative w-full max-w-[20rem] lg:max-w-lg rounded-2xl bg-black bg-cover bg-no-repeat bg-center aspect-square transition-all duration-300 ease-in-out"
+                className="relative w-full max-w-[10rem] lg:max-w-lg rounded-2xl bg-black bg-cover bg-no-repeat bg-center aspect-square transition-all duration-300 ease-in-out"
                 style={{
                 backgroundImage: imageUrl ? `url(${imageUrl})` : 'none',
             }}></div>
@@ -103,6 +121,13 @@ function Generator({}: GeneratorProps) {
                 </button>
               </a>
             </div>
+            {usedEccLevel && usedVersion ? (
+                <span
+                  className="hover:cursor-pointer bg-zinc-800 text-gray-200 py-2 px-6 rounded-full shadow-md hover:bg-zinc-700 transition-colors duration-200 border border-zinc-700"
+                >
+                  ECC: {eccTableResponse[usedEccLevel]} | V: {usedVersion}
+              </span>
+            ) : <></>}
       </div>
       </>
     )}

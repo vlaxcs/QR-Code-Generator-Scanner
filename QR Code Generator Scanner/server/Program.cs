@@ -14,7 +14,7 @@ namespace QR
             {
                 options.AddPolicy("SecureCors", policy =>
                 {
-                    policy.WithOrigins("https://qr.vlaxcs.com", "http://localhost:5173")
+                    policy.WithOrigins("https://qr.vlaxcs.com")
                           .AllowAnyMethod()
                           .AllowAnyHeader();
                 });
