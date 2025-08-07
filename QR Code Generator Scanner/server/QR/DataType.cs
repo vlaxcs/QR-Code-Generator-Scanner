@@ -1,4 +1,5 @@
-﻿public enum DataType {
+﻿public enum DataType
+{
     None = 0,
     Numeric = 1,
     Alphanumeric = 2,

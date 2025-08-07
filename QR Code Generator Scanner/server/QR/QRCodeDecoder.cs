@@ -1,7 +1,7 @@
 ﻿using System.Text;
 
-public static partial class QRCodeDecoder {
-
+public static partial class QRCodeDecoder
+{
     // https://www.thonky.com/qr-code-tutorial/error-correction-table
     static ECCGrouping[][] blocksInfo = {
         new ECCGrouping[]{ new ECCGrouping(7, 1, 19, 0, 0), new ECCGrouping(10, 1, 16, 0, 0), new ECCGrouping(13, 1, 13, 0, 0), new ECCGrouping(17, 1, 9, 0, 0)},
@@ -46,39 +46,56 @@ public static partial class QRCodeDecoder {
         new ECCGrouping[]{ new ECCGrouping(30, 19, 118, 6, 119), new ECCGrouping(28, 18, 47, 31, 48), new ECCGrouping(30, 34, 24, 34, 25), new ECCGrouping(30, 20, 15, 61, 16)},
     };
 
-    public static QRMessage DecodeQR(QRCode code) {
+    public static QRMessage DecodeQR(QRCode code)
+    {
         // Apply error correction
         var grouping = blocksInfo[code.Version - 1][code.ErrorCorrectionLevel];
 
         var totalGroups = grouping.G1Count + grouping.G2Count;
         byte[][] groupedData = new byte[totalGroups][];
-        for(int g = 0; g < groupedData.Length; g++) {
-            if(g < grouping.G1Count) {
+        for (int g = 0; g < groupedData.Length; g++)
+        {
+            if (g < grouping.G1Count)
+            {
                 groupedData[g] = new byte[grouping.codewordsInG1 + grouping.ECCodewordsPerBlock];
-            } else {
+            }
+            else
+            {
                 groupedData[g] = new byte[grouping.codewordsInG2 + grouping.ECCodewordsPerBlock];
             }
         }
 
-        for(int i = 0; i < totalGroups; i++) {
-            for(int j = 0; j < grouping.codewordsInG1; j++) {
+        for (int i = 0; i < totalGroups; i++)
+        {
+            for (int j = 0; j < grouping.codewordsInG1; j++)
+            {
                 groupedData[i][j] = code.data[j * totalGroups + i];
             }
         }
+
         int offset = totalGroups * grouping.codewordsInG1;
-        for(int i = 0; i < grouping.G2Count; i++) {
-            for(int j = 0; j < grouping.codewordsInG2 - grouping.codewordsInG1; j++) {
+
+        for (int i = 0; i < grouping.G2Count; i++)
+        {
+            for (int j = 0; j < grouping.codewordsInG2 - grouping.codewordsInG1; j++)
+            {
                 groupedData[i + grouping.G1Count][grouping.codewordsInG1 + j] = code.data[offset + j + i];
             }
         }
 
         // Put ECC blocks for each group
         offset = grouping.G1Count * grouping.codewordsInG1 + grouping.G2Count * grouping.codewordsInG2;
-        for(int i = 0; i < totalGroups; i++) {
-            for(int j = 0; j < grouping.ECCodewordsPerBlock; j++) {
-                if(i < grouping.G1Count) {
+
+        for (int i = 0; i < totalGroups; i++)
+        {
+            for (int j = 0; j < grouping.ECCodewordsPerBlock; j++)
+            {
+                if (i < grouping.G1Count)
+                {
                     groupedData[i][grouping.codewordsInG1 + j] = code.data[offset + j * totalGroups + i];
-                } else {
+                }
+                else
+                {
                     groupedData[i][grouping.codewordsInG2 + j] = code.data[offset + j * totalGroups + i];
                 }
             }
@@ -86,14 +103,17 @@ public static partial class QRCodeDecoder {
 
         var gf = new GaloisField(grouping.ECCodewordsPerBlock);
 
-        for(int i = 0; i < totalGroups; i++) {
+        for (int i = 0; i < totalGroups; i++)
+        {
             groupedData[i] = gf.Decode(groupedData[i]);
         }
 
 
         List<byte> dataReconstruction = new List<byte>();
-        for(int i = 0; i < totalGroups; i++) {
-            for(int j = 0; j < groupedData[i].Length; j++) {
+        for (int i = 0; i < totalGroups; i++)
+        {
+            for (int j = 0; j < groupedData[i].Length; j++)
+            {
                 dataReconstruction.Add(groupedData[i][j]);
             }
         }
@@ -101,8 +121,10 @@ public static partial class QRCodeDecoder {
 
 
         List<int> bits = new List<int>();
-        for(int i = 0; i < data.Length; i++) {
-            for(int j = 7; j >= 0; j--) {
+        for (int i = 0; i < data.Length; i++)
+        {
+            for (int j = 7; j >= 0; j--)
+            {
                 bits.Add((data[i] >> j) & 1);
             }
         }
@@ -110,12 +132,15 @@ public static partial class QRCodeDecoder {
         int encodingRange = Utility.ComputeEncodingRange(code.datatype, code.Version);
 
         int messageLen = 0;
-        for(int i = 4; i < 4 + encodingRange; i++)
+        for (int i = 4; i < 4 + encodingRange; i++)
+        {
             messageLen += bits[i] * (1 << (encodingRange - i + 3));
+        }
 
         QRMessage message = new QRMessage();
 
-        switch(code.datatype) {
+        switch (code.datatype)
+        {
             case DataType.Numeric:
                 message = DecodeNumericMessage(bits.ToArray(), messageLen, encodingRange);
                 break;
@@ -134,15 +159,18 @@ public static partial class QRCodeDecoder {
         return message;
     }
 
-    static QRMessage DecodeNumericMessage(int[] bits, int messageLen, int encodingRange) {
+    static QRMessage DecodeNumericMessage(int[] bits, int messageLen, int encodingRange)
+    {
         encodingRange = 4 + encodingRange;
 
         int blockSize = 10;
 
         int[] message = new int[messageLen];
-        for(int i = 0; i < message.Length / 3; i++) {
+        for (int i = 0; i < message.Length / 3; i++)
+        {
             message[i * 3] = 0;
-            for(int b = 0; b < blockSize; b++) {
+            for (int b = 0; b < blockSize; b++)
+            {
                 message[i * 3] |= (bits[encodingRange + i * blockSize + b] & 1) << (blockSize - b - 1);
             }
 
@@ -151,13 +179,15 @@ public static partial class QRCodeDecoder {
             message[i * 3] = message[i * 3] / 100;
         }
 
-
-        if(message.Length % 3 != 0) {
+        if (message.Length % 3 != 0)
+        {
             int remainingBlock = 0;
-            for(int b = 0; b < blockSize - (3 - message.Length % 3) * 3; b++) {
+            for (int b = 0; b < blockSize - (3 - message.Length % 3) * 3; b++)
+            {
                 remainingBlock |= (bits[encodingRange + (message.Length / 3) * blockSize + b] & 1) << (blockSize - b - 1 - (3 - message.Length % 3) * 3);
             }
-            for(int i = 0; remainingBlock != 0 && i < message.Length; i++, remainingBlock /= 10) {
+            for (int i = 0; remainingBlock != 0 && i < message.Length; i++, remainingBlock /= 10)
+            {
                 message[message.Length - i - 1] = remainingBlock % 10;
             }
         }
@@ -165,15 +195,18 @@ public static partial class QRCodeDecoder {
         return new QRMessage(DataType.Numeric, message);
     }
 
-    static QRMessage DecodeAlphanumericMessage(int[] bits, int messageLen, int encodingRange) {
+    static QRMessage DecodeAlphanumericMessage(int[] bits, int messageLen, int encodingRange)
+    {
         encodingRange = 4 + encodingRange;
 
         int blockSize = 11;
 
         int[] message = new int[messageLen];
-        for(int i = 0; i < message.Length / 2; i++) {
+        for (int i = 0; i < message.Length / 2; i++)
+        {
             message[i * 2] = 0;
-            for(int b = 0; b < blockSize; b++) {
+            for (int b = 0; b < blockSize; b++)
+            {
                 message[i * 2] |= (bits[encodingRange + i * blockSize + b] & 1) << (blockSize - b - 1);
             }
 
@@ -181,10 +214,12 @@ public static partial class QRCodeDecoder {
             message[i * 2] = message[i * 2] / 45;
         }
 
-        if(messageLen % 2 == 1) {
+        if (messageLen % 2 == 1)
+        {
             message[message.Length - 1] = 0;
             int i = message.Length / 2;
-            for(int b = 0; b < 6; b++) {
+            for (int b = 0; b < 6; b++)
+            {
                 message[message.Length - 1] |= (bits[encodingRange + i * blockSize + b] & 1) << (6 - b - 1);
             }
         }
@@ -192,12 +227,15 @@ public static partial class QRCodeDecoder {
         return new QRMessage(DataType.Alphanumeric, message);
     }
 
-    static QRMessage DecodeByteMessage(int[] bits, int messageLen, int encodingRange) {
+    static QRMessage DecodeByteMessage(int[] bits, int messageLen, int encodingRange)
+    {
         int[] message = new int[messageLen];
         int blockSize = 8;
-        for(int i = 0; i < message.Length; i++) {
+        for (int i = 0; i < message.Length; i++)
+        {
             message[i] = 0;
-            for(int b = 0; b < blockSize; b++) {
+            for (int b = 0; b < blockSize; b++)
+            {
                 message[i] |= (bits[encodingRange + 4 + i * blockSize + b] & 1) << (blockSize - b - 1);
             }
         }

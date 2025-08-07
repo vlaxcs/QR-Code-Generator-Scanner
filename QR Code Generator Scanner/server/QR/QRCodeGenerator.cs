@@ -62,25 +62,35 @@ public static partial class QRCodeGenerator {
     };
 
     public static QRCode Generate(string message, int errorCorrectionLevel = 1, int minVersion = 1, DataType? type = null) {
+
         // Find the optimal dataType or use the one passed in
         QREncodedMessage encodedMessage = new QREncodedMessage();
-        if(type == null) {
+
+        if (type == null)
+        {
             var types = new DataType[] { DataType.Numeric, DataType.Alphanumeric, DataType.Byte, DataType.Kanji };
 
             bool foundAny = false;
-            foreach(var dataType in types) {
-                try {
+            foreach (var dataType in types)
+            {
+                try
+                {
                     encodedMessage = MessageEncoder.EncodeMessage(dataType, message);
                     type = dataType;
-
                     foundAny = true;
-
                     break;
-                } catch { }
+
+                }
+                catch { }
             }
 
-            if(!foundAny) throw new Exception("Couldnt find a compatible encoding data type");
-        } else {
+            if (!foundAny)
+            {
+                throw new Exception("Couldnt find a compatible encoding data type");
+            }
+        }
+        else
+        {
             encodedMessage = MessageEncoder.EncodeMessage(type.Value, message);
         }
 
@@ -93,89 +103,125 @@ public static partial class QRCodeGenerator {
         byte[] ECCBlocks = new byte[grouping.TotalECCBlocks];
         var galoisField = new GaloisField(grouping.ECCodewordsPerBlock);
 
-
         List<byte> bitConversion = new List<byte>();
 
-        AppendBits(bitConversion, (int)type.Value, 4); //APPEMD ENCODING METHOD
+        // Append encoding method
+        AppendBits(bitConversion, (int)type.Value, 4);
 
+        // Append bits length
         int nrOfLengthBits = GetNumberOfLengthBits(version, type.Value);
-
-        AppendBits(bitConversion, message.Length, nrOfLengthBits);  //APPEND BITS LENGHT
-        for(int i = 0; i < encodedMessage.bitsArray.Length; i++) {
+        AppendBits(bitConversion, message.Length, nrOfLengthBits);
+        
+        for (int i = 0; i < encodedMessage.bitsArray.Length; i++)
+        {
             bitConversion.Add(encodedMessage[i]);
         }
-        for(int i = 0; i <= 3; i++) {
+        
+        for (int i = 0; i <= 3; i++)
+        {
             bitConversion.Add(0);
         }
+
         var numberOfBlocks = grouping.TotalDataBlocks;
         var numberOfBits = numberOfBlocks * 8;
-        while(bitConversion.Count < numberOfBits) {
+        
+        while (bitConversion.Count < numberOfBits)
+        {
             bitConversion.Add(0);
-            if(bitConversion.Count % 8 == 0) break;
+
+            if (bitConversion.Count % 8 == 0)
+            {
+                break;
+            }
         }
 
         // Transform bits to bytes
-        for(int i = 0; i < bitConversion.Count / 8; i++) {
+        for(int i = 0; i < bitConversion.Count / 8; i++)
+        {
             dataBlocks[i] = bitConversion[i];
-            for(int b = 0; b < 8; b++) {
+            
+            for (int b = 0; b < 8; b++)
+            {
                 dataBlocks[i] <<= 1;
                 dataBlocks[i] |= bitConversion[i * 8 + b];
             }
         }
 
         bool alternateFiller = true; // Used to alternate between 0xEC and 0x11
-        for(int i = bitConversion.Count / 8; i < numberOfBlocks; i++) {
-            if(alternateFiller) dataBlocks[i] = 0xEC;
-            else dataBlocks[i] = 0x11;
+        for(int i = bitConversion.Count / 8; i < numberOfBlocks; i++)
+        {
+            if (alternateFiller)
+            {
+                dataBlocks[i] = 0xEC;
+            }
+            else
+            {
+                dataBlocks[i] = 0x11;
+            }
             alternateFiller = !alternateFiller;
         }
 
         // Populate G1 type (short) blocks
-        for(int i = 0; i < grouping.G1Count; i++) {
+        for(int i = 0; i < grouping.G1Count; i++)
+        {
             var range = dataBlocks[(i * grouping.codewordsInG1)..((i + 1) * grouping.codewordsInG1)];
             var ECCBlock = galoisField.Encode(range);
 
             // Loop over just the error correction blocks
-            for(int c = 0; c < grouping.ECCodewordsPerBlock; c++) {
+            for(int c = 0; c < grouping.ECCodewordsPerBlock; c++)
+            {
                 ECCBlocks[i * grouping.ECCodewordsPerBlock + c] = ECCBlock[grouping.codewordsInG1 + c];
             }
         }
 
         // Populate G2 type (long) blocks
         int G2Offset = grouping.G1Count * grouping.codewordsInG1;
-        for(int i = 0; i < grouping.G2Count; i++) {
+        for(int i = 0; i < grouping.G2Count; i++)
+        {
             var range = dataBlocks[(G2Offset + i * grouping.codewordsInG2)..(G2Offset + (i + 1) * grouping.codewordsInG2)];
             var ECCBlock = galoisField.Encode(range);
 
             // Loop over just the error correction blocks
-            for(int c = 0; c < grouping.ECCodewordsPerBlock; c++) {
+            for(int c = 0; c < grouping.ECCodewordsPerBlock; c++)
+            {
                 ECCBlocks[(grouping.G1Count + i) * grouping.ECCodewordsPerBlock + c] = ECCBlock[grouping.codewordsInG2 + c];
             }
         }
 
         var result = new byte[dataBlocks.Length + ECCBlocks.Length];
         var totalGroupings = grouping.G1Count + grouping.G2Count;
+
         // Interweave G1 and G2, first G1 length:
         int crntIndex = 0;
-        for(int i = 0; i < grouping.codewordsInG1; i++) {
-            for(int j = 0; j < totalGroupings; j++) {
-                if(j < grouping.G1Count) {
+        for(int i = 0; i < grouping.codewordsInG1; i++)
+        {
+            for(int j = 0; j < totalGroupings; j++)
+            {
+                if(j < grouping.G1Count)
+                {
                     result[crntIndex++] = dataBlocks[j * grouping.codewordsInG1 + i];
-                } else {
+                }
+                else
+                {
                     result[crntIndex++] = dataBlocks[G2Offset + (j - grouping.G1Count) * grouping.codewordsInG2 + i];
                 }
             }
         }
+        
         // Put the rest of G2s
-        for(int i = grouping.codewordsInG1; i < grouping.codewordsInG2; i++) {
-            for(int j = 0; j < grouping.G2Count; j++) {
+        for (int i = grouping.codewordsInG1; i < grouping.codewordsInG2; i++)
+        {
+            for (int j = 0; j < grouping.G2Count; j++)
+            {
                 result[crntIndex++] = dataBlocks[G2Offset + j * grouping.codewordsInG2 + i];
             }
         }
 
         // Interweave ECC Blocks
-        for(int i = 0; i < grouping.ECCodewordsPerBlock; i++) {
-            for(int j = 0; j < totalGroupings; j++) {
+        for(int i = 0; i < grouping.ECCodewordsPerBlock; i++)
+        {
+            for(int j = 0; j < totalGroupings; j++)
+            {
                 result[crntIndex++] = ECCBlocks[j * grouping.ECCodewordsPerBlock + i];
             }
         }
@@ -184,14 +230,14 @@ public static partial class QRCodeGenerator {
         return Generate(result, version, errorCorrectionLevel);
     }
 
-
     static QRCode Generate(byte[] dataBlocks, int qrVersion, int errorCorrectionLevel) {
         version = qrVersion;
         version = qrVersion;
         ECCLevel = errorCorrectionLevel;
 
         code = new int[Utility.SizeForVersion(version)][];
-        for(int i = 0; i < code.Length; i++) {
+        for(int i = 0; i < code.Length; i++)
+        {
             code[i] = new int[Utility.SizeForVersion(version)];
         }
 
@@ -205,12 +251,14 @@ public static partial class QRCodeGenerator {
         return new QRCode(code);
     }
 
-
     static int DetermineFittingVersion(QREncodedMessage message, int minimum, DataType type) {
         var minBlocks = (int)Math.Ceiling(message.bitsArray.Length * 1.0f / 8);
-        for(int i = minimum; i <= 40; i++) {
+        
+        for (int i = minimum; i <= 40; i++)
+        {
             int addedLength = (int)Math.Ceiling((4 + GetNumberOfLengthBits(i - 1, type) * 1.0f) / 8);
-            if(blocksInfo[i - 1][ECCLevel].TotalDataBlocks >= minBlocks + addedLength) {
+            if (blocksInfo[i - 1][ECCLevel].TotalDataBlocks >= minBlocks + addedLength)
+            {
                 version = i;
                 return version;
             }
@@ -221,134 +269,187 @@ public static partial class QRCodeGenerator {
 
     static int GetNumberOfLengthBits(int version, DataType type) {
         int nrOfLengthBits = 0;
-        switch(type) {
+        
+        switch (type)
+        {
             case DataType.Numeric:
-                if(version < 9) nrOfLengthBits = 10;
-                else if(version < 26) nrOfLengthBits = 12;
+                if (version < 9) nrOfLengthBits = 10;
+                else if (version < 26) nrOfLengthBits = 12;
                 else nrOfLengthBits = 14;
                 break;
             case DataType.Alphanumeric:
-                if(version < 9) nrOfLengthBits = 9;
-                else if(version < 26) nrOfLengthBits = 11;
+                if (version < 9) nrOfLengthBits = 9;
+                else if (version < 26) nrOfLengthBits = 11;
                 else nrOfLengthBits = 13;
                 break;
             case DataType.Byte:
-                if(version < 9) nrOfLengthBits = 8;
-                else if(version < 26) nrOfLengthBits = 16;
+                if (version < 9) nrOfLengthBits = 8;
+                else if (version < 26) nrOfLengthBits = 16;
                 else nrOfLengthBits = 16;
                 break;
             default:
                 throw new Exception("Kanji not supported");
         }
+
         return nrOfLengthBits;
     }
 
-    static void AppendBits(List<byte> bits, int nr, int nrOfBits) {
+    static void AppendBits(List<byte> bits, int nr, int nrOfBits)
+    {
         int[] v = new int[nrOfBits];
         int ct = 0;
-        while(nr != 0) {
+        
+        while (nr != 0)
+        {
             v[ct++] = nr % 2;
             nr /= 2;
         }
-        while(ct < nrOfBits) {
+        
+        while (ct < nrOfBits)
+        {
             v[ct++] = 0;
         }
 
-        for(int i = v.Length - 1; i >= 0; i--) {
+        for(int i = v.Length - 1; i >= 0; i--)
+        {
             bits.Add((byte)v[i]);
         }
     }
 
-    static void PlaceBestMask() {
+    static void PlaceBestMask()
+    {
         int MinScore = 999999999;
         int bestMask = -1;
-        for(int i = 0; i <= 7; i++) {
+        
+        for (int i = 0; i <= 7; i++)
+        {
             PutMaskBits(ECCLevel, i);
             ApplyMask(i);
             int penaltyScore = CalculatePenaltyScore();
-            if(penaltyScore < MinScore) {
+
+            if (penaltyScore < MinScore)
+            {
                 MinScore = penaltyScore;
                 bestMask = i;
             }
+
             ApplyMask(i);
         }
+
         mask = bestMask;
         PutMaskBits(ECCLevel ^ 1, mask);
         ApplyMask(mask);
     }
-    static void ApplyVersionBits() {
-        if(version < 7) {
+    
+    static void ApplyVersionBits()
+    {
+        if (version < 7)
+        {
             return;
         }
         int ECCVersion = GetVersionBits(version);
 
-
-        for(int j = 0; j < 6; j++) {
-            for(int i = 0; i < 3; i++) {
+        for (int j = 0; j < 6; j++)
+        {
+            for (int i = 0; i < 3; i++)
+            {
                 code[code.Length - 11 + (2 - i)][5 - j] = ECCVersion >> (17 - j * 3 - i) & 1;
                 code[5 - j][code.Length - 11 + (2 - i)] = ECCVersion >> (17 - j * 3 - i) & 1;
-
             }
         }
     }
-    static void PutAligmentPoints() {
+    
+    static void PutAligmentPoints()
+    {
         var aligmentPoints = GetAlignmentPoints();
-        for(int k = 0; k < aligmentPoints.Length; k += 2) {
+        for (int k = 0; k < aligmentPoints.Length; k += 2)
+        {
             var allx = aligmentPoints[k];
             var ally = aligmentPoints[k + 1];
-            for(int i = -2; i <= 2; i++) {
-                for(int j = -2; j <= 2; j++) {
+
+            for (int i = -2; i <= 2; i++)
+            {
+                for (int j = -2; j <= 2; j++)
+                {
                     code[allx + i][ally + j] = 1;
                 }
             }
-            for(int i = -1; i <= 1; i++) {
-                for(int j = -1; j <= 1; j++) {
+
+            for (int i = -1; i <= 1; i++)
+            {
+                for (int j = -1; j <= 1; j++)
+                {
                     code[allx + i][ally + j] = 0;
                 }
             }
+
             code[allx][ally] = 1;
         }
     }
-    static void PutBlocks() {
-        for(int i = 0; i < 7; i++) {
-            for(int j = 0; j < 7; j++) {
+    
+    static void PutBlocks()
+    {
+        for (int i = 0; i < 7; i++)
+        {
+            for (int j = 0; j < 7; j++)
+            {
                 code[i][j] = code[code.Length - 1 - i][j] = code[i][code.Length - 1 - j] = 1;
             }
         }
-        for(int i = 1; i < 6; i++) {
-            for(int j = 1; j < 6; j++) {
+
+        for (int i = 1; i < 6; i++)
+        {
+            for (int j = 1; j < 6; j++)
+            {
                 code[i][j] = code[code.Length - 1 - i][j] = code[i][code.Length - 1 - j] = 0;
             }
         }
-        for(int i = 2; i < 5; i++) {
-            for(int j = 2; j < 5; j++) {
+
+        for (int i = 2; i < 5; i++)
+        {
+            for (int j = 2; j < 5; j++)
+            {
                 code[i][j] = code[code.Length - 1 - i][j] = code[i][code.Length - 1 - j] = 1;
             }
         }
     }
-    static void PutStripes() {
-        for(int i = 0; i < code.Length; i++) {
+    
+    static void PutStripes()
+    {
+        for (int i = 0; i < code.Length; i++)
+        {
             code[6][i] = code[i][6] = i & 1 ^ 1;
         }
     }
 
-    static void PutMaskBits(int ECCLevel, int mask) {
+    static void PutMaskBits(int ECCLevel, int mask)
+    {
         int maskBits = GetMaskBits(ECCLevel, mask);
 
-        for(int j = 0; j <= 5; j++) {
+        for(int j = 0; j <= 5; j++)
+        {
             code[8][j] = (maskBits >> (14 - j)) & 1;
         }
-        for(int j = 6; j <= 7; j++) {
+        
+        for (int j = 6; j <= 7; j++)
+        {
             code[8][j + 1] = (maskBits >> (14 - j)) & 1;
         }
+
         code[7][8] = (maskBits >> (14 - 8)) & 1;
-        for(int i = 0; i <= 5; i++) {
+        
+        for (int i = 0; i <= 5; i++)
+        {
             code[i][8] = (maskBits >> (i)) & 1;
         }
-        for(int i = 0; i <= 6; i++) {
+        
+        for (int i = 0; i <= 6; i++)
+        {
             code[code.Length - i - 1][8] = (maskBits >> (14 - i)) & 1;
         }
-        for(int j = 0; j <= 7; j++) {
+        
+        for (int j = 0; j <= 7; j++)
+        {
             code[8][code.Length - 1 - j] = (maskBits >> j) & 1;
         }
     }
@@ -359,26 +460,38 @@ public static partial class QRCodeGenerator {
         lengthened[totalData.Length] = 0;
 
         int nr = 0;
-        for(int j = code.Length - 1; j >= 1; j -= 2) {
+        for(int j = code.Length - 1; j >= 1; j -= 2)
+        {
             int nj = j - (j > 6 ? 1 : 2);
-            if(j % 4 != 2) {
-                for(int i = code.Length - 1; i >= 0; i--) {
-                    if(IsData(i, nj + 1)) {
+            
+            if (j % 4 != 2)
+            {
+                for (int i = code.Length - 1; i >= 0; i--)
+                {
+                    if (IsData(i, nj + 1))
+                    {
                         code[i][nj + 1] = (lengthened[nr / 8] >> (7 - (nr % 8))) & 1;
                         nr++;
                     }
-                    if(IsData(i, nj)) {
+
+                    if (IsData(i, nj))
+                    {
                         code[i][nj] = (lengthened[nr / 8] >> (7 - (nr % 8))) & 1;
                         nr++;
                     }
                 }
-            } else {
-                for(int i = 0; i < code.Length; i++) {
-                    if(IsData(i, nj + 1)) {
+            }
+            else
+            {
+                for (int i = 0; i < code.Length; i++)
+                {
+                    if (IsData(i, nj + 1))
+                    {
                         code[i][nj + 1] = (lengthened[nr / 8] >> (7 - (nr % 8))) & 1;
                         nr++;
                     }
-                    if(IsData(i, nj)) {
+                    if (IsData(i, nj))
+                    {
                         code[i][nj] = (lengthened[nr / 8] >> (7 - (nr % 8))) & 1;
                         nr++;
                     }
@@ -386,74 +499,109 @@ public static partial class QRCodeGenerator {
             }
         }
     }
-    static bool IsData(int x, int y) {
+    
+    static bool IsData(int x, int y)
+    {
         int maxWidth = Utility.SizeForVersion(version);
         int[] alligmentPoints = GetAlignmentPoints();
 
-        if(x < 9 && y < 9) return false;
+        if (x < 9 && y < 9) return false;
+        if (x < 9 && y > maxWidth - 9) return false;
+        if (x > maxWidth - 9 && y < 9) return false;
+        if (version >= 7 && x < 7 && y > maxWidth - 12) return false;
+        if (version >= 7 && y < 7 && x > maxWidth - 12) return false;
+        if (x == 6 || y == 6) return false;
 
-        if(x < 9 && y > maxWidth - 9) return false;
-        if(x > maxWidth - 9 && y < 9) return false;
-
-        if(version >= 7 && x < 7 && y > maxWidth - 12) return false;
-        if(version >= 7 && y < 7 && x > maxWidth - 12) return false;
-
-        if(x == 6 || y == 6) return false;
-        for(int i = 0; i < alligmentPoints.Length; i += 2) {
-            if(Math.Abs(alligmentPoints[i] - x) < 3 && Math.Abs(alligmentPoints[i + 1] - y) < 3)
+        for (int i = 0; i < alligmentPoints.Length; i += 2)
+        {
+            if (Math.Abs(alligmentPoints[i] - x) < 3 && Math.Abs(alligmentPoints[i + 1] - y) < 3)
+            {
                 return false;
+            }
         }
+
         return true;
     }
-    static int[] GetAlignmentCoords() {
-        if(version <= 1) {
+    
+    static int[] GetAlignmentCoords()
+    {
+        if (version <= 1)
+        {
             return new int[0];
         }
+
         int num = (version / 7) + 2;
         int[] result = new int[num];
         result[0] = 6;
-        if(num == 1) {
-            for(int i = 0; i < num; i++) {
+
+        if (num == 1)
+        {
+            for (int i = 0; i < num; i++)
+            {
                 result[i] = version * 4 + 16 - result[i];
             }
             return result;
         }
+
         result[num - 1] = 4 * version + 10;
-        if(num == 2) {
-            for(int i = 0; i < num; i++) {
+
+        if (num == 2)
+        {
+            for (int i = 0; i < num; i++)
+            {
                 result[i] = version * 4 + 16 - result[i];
             }
+
             return result;
         }
+
         result[num - 2] = 2 * ((result[0] + result[num - 1] * (num - 2)) / ((num - 1) * 2));
-        if(num == 3) {
-            for(int i = 0; i < num; i++) {
+
+        if (num == 3)
+        {
+            for (int i = 0; i < num; i++)
+            {
                 result[i] = version * 4 + 16 - result[i];
             }
             return result;
         }
+
         int step = result[num - 1] - result[num - 2];
-        for(int i = num - 3; i > 0; i--) {
+
+        for (int i = num - 3; i > 0; i--)
+        {
             result[i] = result[i + 1] - step;
         }
-        for(int i = 0; i < num; i++) {
+        
+        for (int i = 0; i < num; i++)
+        {
             result[i] = version * 4 + 16 - result[i];
         }
+
         return result;
     }
-    static int[] GetAlignmentPoints() {
+    
+    static int[] GetAlignmentPoints()
+    {
         int[] AlignmentCoords = GetAlignmentCoords();
-        if(AlignmentCoords.Length == 0)
+
+        if (AlignmentCoords.Length == 0)
+        {
             return new int[0];
+        }
+
         int[] ans = new int[2 * AlignmentCoords.Length * AlignmentCoords.Length - 6];
         int nr = 0;
-        for(int i = 0; i < AlignmentCoords.Length; i++) {
-            for(int j = 0; j < AlignmentCoords.Length; j++) {
-                if(i == AlignmentCoords.Length - 1 && j == AlignmentCoords.Length - 1)
+
+        for (int i = 0; i < AlignmentCoords.Length; i++)
+        {
+            for (int j = 0; j < AlignmentCoords.Length; j++)
+            {
+                if (i == AlignmentCoords.Length - 1 && j == AlignmentCoords.Length - 1)
                     continue;
-                if(i == 0 && j == AlignmentCoords.Length - 1)
+                if (i == 0 && j == AlignmentCoords.Length - 1)
                     continue;
-                if(j == 0 && i == AlignmentCoords.Length - 1)
+                if (j == 0 && i == AlignmentCoords.Length - 1)
                     continue;
 
                 ans[nr++] = AlignmentCoords[i];
@@ -463,14 +611,18 @@ public static partial class QRCodeGenerator {
 
         return ans;
     }
-    static int GetMaskBits(int ECCLevel, int maskPattern) {
+    
+    static int GetMaskBits(int ECCLevel, int maskPattern)
+    {
         int nr = (ECCLevel << 3) + maskPattern;
         int initnr = nr;
         nr <<= 10;
         int gen = 0x0537; // 10100110111 is the generator=0x0537
         int initGen = gen;
-        while(nr.MostSignificantBit() >= 1024) {
-            while(gen.MostSignificantBit() < nr.MostSignificantBit()) {
+        while (nr.MostSignificantBit() >= 1024)
+        {
+            while (gen.MostSignificantBit() < nr.MostSignificantBit())
+            {
                 gen <<= 1;
             }
             nr ^= gen;
@@ -481,28 +633,41 @@ public static partial class QRCodeGenerator {
         return nr;
     }
 
-    static void ApplyMask(int mask) {
-        for(int i = 0; i < code.Length; i++) {
-            for(int j = 0; j < code.Length; j++) {
+    static void ApplyMask(int mask)
+    {
+        for(int i = 0; i < code.Length; i++)
+        {
+            for(int j = 0; j < code.Length; j++)
+            {
                 if(!IsData(i, j) || !masks[mask](i, j)) continue;
                 code[i][j] ^= 1;
             }
         }
     }
-    static int GetVersionBits(int Version) {
-        if(Version < 7 || Version > 40)
+    
+    static int GetVersionBits(int Version)
+    {
+        if (Version < 7 || Version > 40)
+        {
             throw new Exception("Version is not good");
+        }
+
         int initnr = Version;
         Version <<= 12;
         int gen = 0x1F25; // 1 1111 0010 0101 is the generator=0x1F25
         int initGen = gen;
-        while(Version.MostSignificantBit() >= 4096) {
-            while(gen.MostSignificantBit() < Version.MostSignificantBit()) {
+
+        while (Version.MostSignificantBit() >= 4096)
+        {
+            while (gen.MostSignificantBit() < Version.MostSignificantBit())
+            {
                 gen <<= 1;
             }
+
             Version ^= gen;
             gen = initGen;
         }
+
         Version |= initnr << 12;
         return Version;
     }
@@ -514,14 +679,33 @@ public static partial class QRCodeGenerator {
 
         // Calculate hroziontal consecutives penalties
         for(int i = 0; i < code.Length; i++) {
-            if(consecutives == 5) score += 3;
-            else if(consecutives > 5) score++;
+            if (consecutives == 5)
+            {
+                score += 3;
+            }
+            else if (consecutives > 5)
+            {
+                score++;
+            }
+
             consecutives = 1;
-            for(int j = 1; j < code.Length; j++) {
-                if(code[i][j] == code[i][j - 1]) consecutives++;
-                else {
-                    if(consecutives == 5) score += 3;
-                    else if(consecutives > 5) score += 3 + consecutives - 5;
+
+            for (int j = 1; j < code.Length; j++)
+            {
+                if (code[i][j] == code[i][j - 1])
+                {
+                    consecutives++;
+                }
+                else
+                {
+                    if (consecutives == 5)
+                    {
+                        score += 3;
+                    }
+                    else if (consecutives > 5)
+                    {
+                        score += 3 + consecutives - 5;
+                    }
                     consecutives = 1;
                 }
             }
@@ -530,66 +714,114 @@ public static partial class QRCodeGenerator {
         // Calculate vertical consecutives penalties
         for (int i = 0; i < code.Length; i++)
         {
-            if (consecutives == 5) score += 3;
-            else if (consecutives > 5) score++;
+            if (consecutives == 5)
+            {
+                score += 3;
+            }
+            else if (consecutives > 5)
+            {
+                score++;
+            } 
             consecutives = 1;
+
             for (int j = 1; j < code.Length; j++)
             {
-                if (code[j][i] == code[j - 1][i]) consecutives++;
+                if (code[j][i] == code[j - 1][i])
+                {
+                    consecutives++;
+                }
                 else
                 {
-                    if (consecutives == 5) score += 3;
-                    else if (consecutives > 5) score += 3 + consecutives - 5;
+                    if (consecutives == 5)
+                    {
+                        score += 3;
+                    }
+                    else if (consecutives > 5)
+                    {
+                        score += 3 + consecutives - 5;
+                    }
                     consecutives = 1;
                 }
             }
         }
 
         // Calculate 2x2 penalties
-        for(int i = 1; i < code.Length; i++) {
-            for(int j = 1; j < code.Length; j++) {
+        for(int i = 1; i < code.Length; i++)
+        {   
+            for (int j = 1; j < code.Length; j++)
+            {
                 if(code[i][j] == code[i][j - 1] && code[i][j - 1] == code[i - 1][j - 1] && code[i - 1][j - 1] == code[i - 1][j])
                     score += 3;
             }
         }
 
         // Horizontal finder-like penalties
-        for(int i = 0; i < code.Length; i++) {
+        for(int i = 0; i < code.Length; i++)
+        {
             int nr = 0, mod = 1 << 11;
 
-            for(int j = 0; j < 11; j++)
+            for (int j = 0; j < 11; j++)
+            {
                 nr = nr * 2 + code[i][j];
-            if(nr == 1488 || nr == 93)
+            }
+            
+            if (nr == 1488 || nr == 93)
+            {
                 score += 40;
-            for(int j = 11; j < code.Length; j++) {
+            }
+
+            for (int j = 11; j < code.Length; j++)
+            {
                 nr = nr % mod * 2 + code[i][j];
-                if(nr == 1488 || nr == 93)
+                
+                if (nr == 1488 || nr == 93)
+                {
                     score += 40;
+                }
             }
         }
+        
         // Vertical finder-like penalties
-        for(int i = 0; i < code.Length; i++) {
+        for (int i = 0; i < code.Length; i++)
+        {
             int nr = 0, mod = 1 << 11;
-            for(int j = 0; j < 11; j++)
+
+            for (int j = 0; j < 11; j++)
+            {
                 nr = nr * 2 + code[j][i];
-            if(nr == 1488 || nr == 93)
+            }
+
+            if (nr == 1488 || nr == 93)
+            {
                 score += 40;
-            for(int j = 11; j < code.Length; j++) {
+            }
+
+            for (int j = 11; j < code.Length; j++)
+            {
                 nr = nr % mod * 2 + code[j][i];
-                if(nr == 1488 || nr == 93)
+
+                if (nr == 1488 || nr == 93)
+                {
                     score += 40;
+                }
             }
         }
 
         // Dark/light balance penalties
         int darkModules = 0;
-        for(int i = 0; i < code.Length; i++)
-            for(int j = 0; j < code.Length; j++)
+        for (int i = 0; i < code.Length; i++)
+        {
+            for (int j = 0; j < code.Length; j++)
+            {
                 darkModules += code[i][j];
+            }
+        }
+
         int totalModules = code.Length * code.Length;
         int m = totalModules / (darkModules);
         int intervalStart = m / 5 * 5;
         int intervalEnd = (m / 5 + 1) * 5;
+
         intervalStart -= 50; intervalEnd -= 50;
         intervalStart = Math.Abs(intervalStart);
         intervalEnd = Math.Abs(intervalEnd);
