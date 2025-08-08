@@ -21,8 +21,8 @@
   Select versions from 1 to 40 to see how QR code size and data capacity scale with complexity.
 
 ### Development
-- **[Back-end ~ API](./QR%20Code%20Generator%20Scanner/client/)**: C# (.NET 8)
-- **[Front-end](./service-backend/)**: React.JS with Typescript, Tailwind CSS v4.0
+- **[Back-end ~ API](./QR%20Code%20Generator%20Scanner/server/)**: C# (.NET 8)
+- **[Front-end](./QR%20Code%20Generator%20Scanner/client/)**: React.JS with Typescript, Tailwind CSS v4.0
 
 ## Explore
 
@@ -71,7 +71,7 @@ This is the **back-end** of the Pancake's QR application, built with **C# (.NET 
 
   - 📁 Root Directory: `server`
 
-  - 📄 [`Program.cs`](./QR%20Code%20Generator%20Scanner/client/)
+  - 📄 [`Program.cs`](./QR%20Code%20Generator%20Scanner/server/)
     - Responsible for **configuring the API pipeline** and services.
     - Uses `Microsoft.AspNetCore` for building and hosting the web API.
     - Integrates `Microsoft.OpenApi` to **serialize API metadata into JSON**, enabling **Swagger UI** for interactive documentation.
